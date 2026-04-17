@@ -420,6 +420,48 @@
   .realtime-btn:hover { background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(52, 211, 153, 0.25)); }
   .realtime-empty { text-align: center; padding: 20px; color: #555; font-size: 13px; line-height: 1.8; }
 
+  /* ===== 장중 신규 발굴 종목 (누적) ===== */
+  .intraday-section {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.05), rgba(251, 191, 36, 0.05));
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .intraday-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .intraday-title { font-size: 16px; font-weight: 800; color: #fb923c; display: flex; align-items: center; gap: 6px; }
+  .intraday-count { font-size: 11px; color: #8890aa; background: rgba(251,146,60,0.12); padding: 3px 9px; border-radius: 999px; }
+  .intraday-help { font-size: 11px; color: #8890aa; margin-bottom: 10px; line-height: 1.5; }
+  .intraday-card {
+    background: #14182a;
+    border: 1px solid #22263a;
+    border-left: 3px solid #fb923c;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .intraday-card.style-swing { border-left-color: #a78bfa; }
+  .intraday-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+  .intraday-time { font-size: 11px; font-weight: 700; color: #fb923c; background: rgba(251,146,60,0.12); padding: 3px 8px; border-radius: 6px; font-family: ui-monospace, monospace; }
+  .intraday-slot { font-size: 11px; color: #a78bfa; background: rgba(167,139,250,0.12); padding: 3px 8px; border-radius: 6px; }
+  .intraday-style { font-size: 11px; color: #34d399; background: rgba(52,211,153,0.12); padding: 3px 8px; border-radius: 6px; }
+  .intraday-style.swing { color: #a78bfa; background: rgba(167,139,250,0.12); }
+  .intraday-name-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
+  .intraday-name { font-size: 17px; font-weight: 800; color: #fff; }
+  .intraday-code { font-size: 11px; color: #8890aa; margin-left: 6px; }
+  .intraday-price { font-size: 15px; font-weight: 700; color: #fff; text-align: right; }
+  .intraday-reason { font-size: 12.5px; color: #fbbf24; background: rgba(251,191,36,0.08); border-radius: 8px; padding: 8px 10px; margin: 6px 0; line-height: 1.55; }
+  .intraday-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .intraday-kv { background: rgba(20,23,40,0.6); border-radius: 8px; padding: 7px 8px; text-align: center; }
+  .intraday-kv-label { font-size: 10px; color: #8890aa; }
+  .intraday-kv-val { font-size: 12px; font-weight: 700; margin-top: 2px; }
+  .intraday-kv-buy { color: #fbbf24; }
+  .intraday-kv-target { color: #34d399; }
+  .intraday-kv-stop { color: #fb7185; }
+  .intraday-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: #8890aa; }
+  .intraday-rr { color: #a78bfa; font-weight: 700; }
+  .intraday-empty { text-align: center; padding: 20px; color: #555; font-size: 12.5px; line-height: 1.8; }
+
   /* 적중률 분석 */
   .track-section { background: linear-gradient(135deg, #0f1420, #14182a); border: 1px solid #22263a; border-radius: 16px; padding: 16px; margin-top: 20px; }
   .track-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
@@ -642,6 +684,28 @@ const pickData = {
     ]
   },
   trackRecord: null,
+  // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
+  // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
+  // 이미 추천한 종목(best·top3)과 중복되지 않는 완전히 새로운 종목만 추가합니다.
+  // 매일 아침 07:35 daily-trading-recommendation 실행 시 [] 로 초기화됩니다.
+  intradayPicks: [],
+  // intradayPicks 데이터 예시:
+  // intradayPicks: [
+  //   {
+  //     time: "09:12",                       // 발굴 시각
+  //     slot: "시초가 급등 대장주",            // 시초가 급등 대장주 / 09:15 수급 폭증 대장 / 2부 주도주 / 오후 기관 매수 주도주
+  //     style: "단타",                        // 단타 / 스윙
+  //     name: "...", code: "...",
+  //     price: 0, change: 0, changePct: 0, stars: 5,
+  //     reason: "왜 지금 이 종목인가 — 발굴 근거 1~2줄 요약",
+  //     supply: "...", signals: {...},
+  //     buyRange: "...", buyExtra: "...", weight: "...",
+  //     target: 0, stop: 0, targetPct: "...", stopPct: "...", riskReward: "1 : 2.0",
+  //     news: [...], sector: [...],
+  //     valid: "당일 단타 (15:30 마감 전 정리)",
+  //     risks: [...]
+  //   }
+  // ],
   // trackRecord 데이터 예시 (15:30 장마감 후 자동 채워짐):
   // trackRecord: {
   //   date: "4월 17일",
@@ -947,6 +1011,69 @@ function renderTrackRecord(tr) {
   }
 }
 
+function renderIntradayPick(p) {
+  try {
+    if (!p) return "";
+    const price = typeof p.price === 'number' ? p.price : 0;
+    const change = typeof p.change === 'number' ? p.change : 0;
+    const changePct = typeof p.changePct === 'number' ? p.changePct : 0;
+    const chgClass = change >= 0 ? "chg-up" : "chg-down";
+    const chgSign = change >= 0 ? "▲" : "▼";
+    const isSwing = (p.style || "").includes("스윙");
+    const buyRange = p.buyRange || (price ? price.toLocaleString() + "원" : "-");
+    const target = typeof p.target === 'number' ? p.target.toLocaleString() : "-";
+    const stop = typeof p.stop === 'number' ? p.stop.toLocaleString() : "-";
+    const reason = p.reason || (Array.isArray(p.news) ? (p.news[0] || "") : "");
+    const newsHTML = Array.isArray(p.news) && p.news.length ? p.news.map(n => `<div class="news-item">${n || ""}</div>`).join("") : "";
+    const sectorHTML = Array.isArray(p.sector) ? p.sector.map(s => `<span class="mini-tag">#${s || ""}</span>`).join("") : "";
+
+    return `<div class="intraday-card ${isSwing ? 'style-swing' : ''}">
+      <div class="intraday-meta">
+        <span class="intraday-time">⏰ ${p.time || "-"}</span>
+        <span class="intraday-slot">${p.slot || "신규 발굴"}</span>
+        <span class="intraday-style ${isSwing ? 'swing' : ''}">${p.style || "단타"}</span>
+        <span style="font-size:11px;color:#fbbf24">${renderStars(p.stars || 0)}</span>
+      </div>
+      <div class="intraday-name-row">
+        <div><span class="intraday-name">${p.name || "종목명 없음"}</span><span class="intraday-code">${p.code || ""}</span></div>
+        <div class="intraday-price">${price.toLocaleString()}원 <span class="${chgClass}" style="font-size:12px;margin-left:4px">${chgSign}${Math.abs(change).toLocaleString()} (${changePct > 0 ? '+' : ''}${changePct}%)</span></div>
+      </div>
+      ${reason ? `<div class="intraday-reason">💡 ${reason}</div>` : ""}
+      <div class="intraday-grid">
+        <div class="intraday-kv"><div class="intraday-kv-label">💰 매수</div><div class="intraday-kv-val intraday-kv-buy">${buyRange}</div></div>
+        <div class="intraday-kv"><div class="intraday-kv-label">🎯 목표</div><div class="intraday-kv-val intraday-kv-target">${target} <span style="font-size:10px;opacity:0.8">${p.targetPct || ''}</span></div></div>
+        <div class="intraday-kv"><div class="intraday-kv-label">🛑 손절</div><div class="intraday-kv-val intraday-kv-stop">${stop} <span style="font-size:10px;opacity:0.8">${p.stopPct || ''}</span></div></div>
+      </div>
+      ${p.supply ? `<div style="font-size:12px;color:#b8bccc;margin-top:8px;line-height:1.5">📊 ${p.supply}</div>` : ""}
+      ${newsHTML ? `<div style="margin-top:8px">${newsHTML}</div>` : ""}
+      ${sectorHTML ? `<div class="tag-row" style="margin-top:6px">${sectorHTML}</div>` : ""}
+      <div class="intraday-bottom">
+        <span>⏰ ${p.valid || "당일 단타"}</span>
+        <span class="intraday-rr">R:R ${p.riskReward || '-'}</span>
+      </div>
+    </div>`;
+  } catch(e) {
+    return `<div class="intraday-card"><div style="padding:12px;text-align:center;color:#fb7185">⚠️ 카드 오류</div></div>`;
+  }
+}
+
+function renderIntradaySection(picks) {
+  const arr = Array.isArray(picks) ? picks : [];
+  const count = arr.length;
+  const helpText = "장중 예약 작업(09:12·09:24·10:34·14:07)이 <strong>실시간 수급·거래량을 스캔해</strong> 아침 추천 이외의 <strong>완전히 새로운 대장주</strong>를 발굴해 이 자리에 쌓아갑니다. 아침 TOP3 가격 갱신이 아닙니다.";
+  const body = count === 0
+    ? `<div class="intraday-empty">🔎 장 시작 후 예약 스캔에서 신규 대장주가 포착되면 여기에 쌓입니다<br>09:12 시초가 · 09:24 수급 · 10:34 2부 주도주 · 14:07 오후 기관 매수</div>`
+    : arr.map(renderIntradayPick).join("");
+  return `<div class="intraday-section">
+    <div class="intraday-header">
+      <div class="intraday-title">🔥 장중 신규 발굴 주도주</div>
+      <span class="intraday-count">${count}종목 누적</span>
+    </div>
+    <div class="intraday-help">${helpText}</div>
+    ${body}
+  </div>`;
+}
+
 function renderPickPage() {
   try {
     if (!pickData || typeof pickData !== 'object') return `<div style="padding:40px;text-align:center;color:#fb7185">⚠️ 데이터를 불러올 수 없습니다</div>`;
@@ -991,16 +1118,19 @@ function renderPickPage() {
 
     ${portfolioHTML}
 
-    <div class="divider-label">⚡ 실시간 추천 (새로고침)</div>
+    <div class="divider-label">🔥 장중 신규 발굴 (시간대별 누적)</div>
+    ${renderIntradaySection(pickData.intradayPicks)}
+
+    <div class="divider-label">🔧 기존 포지션 관리 (아침 TOP3 체크)</div>
     <div class="realtime-section">
       <div class="realtime-header">
-        <div class="realtime-title">⚡ 장중 실시간 추천</div>
+        <div class="realtime-title">🔧 포지션 관리 체크</div>
         <div class="realtime-time" id="rt-time">${pickData.realtimeLabel || "업데이트 대기 중"}</div>
       </div>
       ${pickData.realtime ? renderPickCard(pickData.realtime, false) : `
       <div class="realtime-empty">
-        장 시작 후 자동으로 업데이트됩니다<br>
-        <strong>09:05 · 09:20 · 10:30 · 11:30 · 14:00 · 14:30</strong><br>
+        11:30·14:30 예약 작업이 아침 TOP3의<br>
+        <strong>눌림목·익절·손절 타이밍</strong>을 체크해 여기에 표시합니다<br>
         📱 페이지 새로고침(당겨서)만 하면 최신 데이터!
       </div>`}
     </div>
