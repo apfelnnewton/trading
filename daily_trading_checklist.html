@@ -546,8 +546,9 @@
 // ===== 오늘의 추천 샘플 데이터 =====
 const pickData = {
   date: "2026년 4월 17일 (금) 추천",
-  updated: "4월 17일 15:40 장마감 분석 (종가 실측 정정 시도 — 데이터 소스 차단) — Claude 자동 분석",
+  updated: "4월 17일 16:45 하드코딩 필드 수정 — Claude 자동 분석",
   macro: {
+    asOf: "4/17 한국장 마감 기준",
     vix: "18.17 (안정 ✅)",
     sox: "9,040 (+1.3%, 사상 최고치 근접 🔥)",
     nasdaq: "22,903 (+0.35%)",
@@ -971,7 +972,7 @@ function renderMacro(m) {
     <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
       <div class="section-icon" style="background:rgba(96,165,250,0.15)">🌍</div>
       <div class="section-title-wrap">
-        <div class="section-time">4/16 장마감 기준</div>
+        <div class="section-time">${m.asOf || "장마감 기준"}</div>
         <div class="section-title">글로벌 매크로 요약</div>
       </div>
       <span class="chevron">▼</span>
