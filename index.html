@@ -769,7 +769,7 @@ function renderPickCard(p, isBest) {
       <div class="price-grid">
         <div class="price-box pb-buy">
           <div class="price-box-label">매집 중심</div>
-          <div class="price-box-val">${Math.round((parseInt(p.buyRange.split('~')[0].replace(/[^\d]/g,'')) + parseInt(p.buyRange.split('~')[1].replace(/[^\d]/g,''))) / 2).toLocaleString()}</div>
+          <div class="price-box-val">${p.buyRange.includes('~') ? Math.round((parseInt(p.buyRange.split('~')[0].replace(/[^\d]/g,'')) + parseInt(p.buyRange.split('~')[1].replace(/[^\d]/g,''))) / 2).toLocaleString() : p.price.toLocaleString()}</div>
           <div class="price-box-pct">기준가</div>
         </div>
         <div class="price-box pb-target">
