@@ -447,6 +447,8 @@
   .track-dot.miss { background: #fb7185; }
   .track-dot.neutral { background: #fbbf24; }
 
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
   .divider-label {
     text-align: center; font-size: 13px; font-weight: 700;
     color: #8890aa; margin: 20px 0 14px;
@@ -523,7 +525,7 @@ const pickData = {
     changePct: 1.70,
     stars: 5,
     supply: "외인+기관 쌍끌이 매수 지속 · SOX 사상 최고치 연동 — HBM4 밸류체인 수급 최강 💪",
-    signals: { sar: true, vr: true, boll: true, vrValue: "VR 172", sarNote: "상승 전환 확정", bollNote: "상단 밴드 돌파 지속" },
+    signals: { sar: true, vr: true, boll: true, vrValue: "기관 +180억 순매수", sarNote: "외인 4월 5.8조 순매수 지속", bollNote: "전일 대비 거래량 2.1배" },
     buyRange: "43,000 ~ 44,500원",
     buyExtra: "42,000원 아래 추가매수 (볼린저 중심선 지지 확인)",
     weight: "첫 매수 5% → 추가 5%씩 (최대 20%)",
@@ -560,7 +562,7 @@ const pickData = {
       code: "KRX 034020",
       price: 108800, change: -2000, changePct: -1.81, stars: 4,
       supply: "외인+기관 동반 매수 · 원전 수주 기대감 폭발 — 시총 70조 돌파",
-      signals: { sar: true, vr: true, boll: true, vrValue: "VR 165", sarNote: "상승 추세 강화", bollNote: "상단 밴드 돌파" },
+      signals: { sar: true, vr: true, boll: true, vrValue: "기관 +250억 순매수", sarNote: "외인 4월 순매수 지속", bollNote: "전일 대비 거래량 1.8배" },
       buyRange: "108,000 ~ 112,000원",
       buyExtra: "105,000원 아래 추가매수 (20일선 지지)",
       weight: "첫 매수 5% → 추가 5% (최대 15%)",
@@ -596,7 +598,7 @@ const pickData = {
       code: "KRX 010120",
       price: 188600, change: 0, changePct: 0.00, stars: 4,
       supply: "액면분할 후 신규 매수세 유입 · 북미 데이터센터 수주 1703억원 확보",
-      signals: { sar: true, vr: true, boll: false, vrValue: "VR 185", sarNote: "상승 전환", bollNote: "밴드 상단 과열 구간" },
+      signals: { sar: true, vr: false, boll: true, vrValue: "기관 -3589억 (4월 순매도)", sarNote: "외인 소폭 매수 전환", bollNote: "액면분할 후 거래량 3배 급증" },
       buyRange: "185,000 ~ 190,000원",
       buyExtra: "182,000원 아래 추가매수 (5일선 지지)",
       weight: "첫 매수 5% → 추가 5% (최대 10%)",
@@ -661,7 +663,7 @@ const pickData = {
     changePct: 2.15,
     stars: 5,
     supply: "🏦 기관 오후장 순매수 전환 확인 · 외인 매수 재유입 · HPSP 45,100원 돌파 (추천가 44,900원 상회) · HBM4 밸류체인 기관 매집 본격화 💪",
-    signals: { sar: true, vr: true, boll: true, vrValue: "VR 178", sarNote: "상승 추세 강화", bollNote: "상단 밴드 재돌파" },
+    signals: { sar: true, vr: true, boll: true, vrValue: "기관 오후 순매수 전환", sarNote: "외인 매수 재유입", bollNote: "오후 거래량 증가세" },
     buyRange: "44,500 ~ 45,300원 (현재가 45,100원 근접)",
     buyExtra: "45,500원 이상 추격매수 자제 · 44,000원 아래 분할 추가매수",
     weight: "첫 매수 5% → 추가 5% (최대 20%) · 기관 매수 지속 시 장마감 전 증액 고려",
@@ -701,9 +703,9 @@ function renderStars(n) {
 
 function renderSignals(sig) {
   const chips = [
-    { on: sig.sar, label: "SAR " + (sig.sar ? "✓" : "✗"), note: sig.sarNote },
-    { on: sig.vr, label: sig.vrValue + " " + (sig.vr ? "✓" : "✗"), note: sig.vr ? "150+ 강함" : "150 미달" },
-    { on: sig.boll, label: "볼린저 " + (sig.boll ? "✓" : "✗"), note: sig.bollNote },
+    { on: sig.sar, label: "외인 " + (sig.sar ? "매수 ✓" : "매도 ✗"), note: sig.sarNote },
+    { on: sig.vr, label: "기관 " + (sig.vr ? "매수 ✓" : "매도 ✗"), note: sig.vrValue },
+    { on: sig.boll, label: "거래량 " + (sig.boll ? "급증 ✓" : "보통 ✗"), note: sig.bollNote },
   ];
   return `<div class="signal-grid">${chips.map(c =>
     `<div class="signal-chip ${c.on ? '' : 'off'}">${c.label}<div style="font-size:10px;opacity:0.8;margin-top:2px">${c.note}</div></div>`
@@ -733,6 +735,13 @@ function renderPickCard(p, isBest) {
         <div class="pick-price-chg ${chgClass}">${chgSign} ${Math.abs(p.change).toLocaleString()} (${p.changePct > 0 ? '+' : ''}${p.changePct}%)</div>
       </div>
     </div>
+    ${p.stop && p.price <= p.stop ? `<div style="background:rgba(251,63,94,0.15);border:1px solid rgba(251,63,94,0.4);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center;animation:blink 1s infinite">
+      🚨 <strong>손절선 도달!</strong> 현재가 ${p.price.toLocaleString()}원 ≤ 손절가 ${p.stop.toLocaleString()}원 — 즉시 매도 검토
+    </div>` : p.stop && p.price <= p.stop * 1.02 ? `<div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
+      ⚠️ <strong>손절선 근접!</strong> 현재가 ${p.price.toLocaleString()}원 → 손절가 ${p.stop.toLocaleString()}원까지 ${((p.price - p.stop) / p.price * 100).toFixed(1)}% 남음
+    </div>` : p.target && p.price >= p.target ? `<div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
+      🎯 <strong>목표가 도달!</strong> 현재가 ${p.price.toLocaleString()}원 ≥ 목표가 ${p.target.toLocaleString()}원 — 익절 검토
+    </div>` : ""}
 
     <div class="pick-row">
       <div class="pick-row-label">📊 수급 상태</div>
@@ -740,7 +749,7 @@ function renderPickCard(p, isBest) {
     </div>
 
     <div class="pick-row">
-      <div class="pick-row-label">🎯 진입 신호 (3종 세트)</div>
+      <div class="pick-row-label">🎯 수급 신호 (외인·기관·거래량)</div>
       ${renderSignals(p.signals)}
     </div>
 
