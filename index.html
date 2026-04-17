@@ -706,10 +706,11 @@ function renderStars(n) {
 }
 
 function renderSignals(sig) {
+  if (!sig) return `<div class="signal-grid"><div class="signal-chip off">신호 데이터 없음</div></div>`;
   const chips = [
-    { on: sig.sar, label: "외인 " + (sig.sar ? "매수 ✓" : "매도 ✗"), note: sig.sarNote },
-    { on: sig.vr, label: "기관 " + (sig.vr ? "매수 ✓" : "매도 ✗"), note: sig.vrValue },
-    { on: sig.boll, label: "거래량 " + (sig.boll ? "급증 ✓" : "보통 ✗"), note: sig.bollNote },
+    { on: !!sig.sar, label: "외인 " + (sig.sar ? "매수 ✓" : "매도 ✗"), note: sig.sarNote || "-" },
+    { on: !!sig.vr, label: "기관 " + (sig.vr ? "매수 ✓" : "매도 ✗"), note: sig.vrValue || "-" },
+    { on: !!sig.boll, label: "거래량 " + (sig.boll ? "급증 ✓" : "보통 ✗"), note: sig.bollNote || "-" },
   ];
   return `<div class="signal-grid">${chips.map(c =>
     `<div class="signal-chip ${c.on ? '' : 'off'}">${c.label}<div style="font-size:10px;opacity:0.8;margin-top:2px">${c.note}</div></div>`
@@ -717,39 +718,105 @@ function renderSignals(sig) {
 }
 
 function renderPickCard(p, isBest) {
-  const chgClass = p.change >= 0 ? "chg-up" : "chg-down";
-  const chgSign = p.change >= 0 ? "▲" : "▼";
-  const wrapClass = isBest ? "best-pick" : "pick-card";
-  const badge = isBest
-    ? ``
-    : `<div class="pick-rank">#${p.rank}</div>`;
+  try {
+    if (!p) return `<div class="pick-card-wrap"><div class="pick-card"><div style="padding:20px;text-align:center;color:#8890aa">데이터 로딩 중...</div></div></div>`;
+    const price = typeof p.price === 'number' ? p.price : 0;
+    const change = typeof p.change === 'number' ? p.change : 0;
+    const changePct = typeof p.changePct === 'number' ? p.changePct : 0;
+    const stop = typeof p.stop === 'number' ? p.stop : null;
+    const target = typeof p.target === 'number' ? p.target : null;
+    const buyRange = typeof p.buyRange === 'string' ? p.buyRange : String(price);
+    const chgClass = change >= 0 ? "chg-up" : "chg-down";
+    const chgSign = change >= 0 ? "▲" : "▼";
+    const wrapClass = isBest ? "best-pick" : "pick-card";
+    const badge = isBest ? `` : `<div class="pick-rank">#${p.rank || ""}</div>`;
+    const crownHTML = isBest ? `<div style="text-align:center"><div class="best-crown">👑 오늘의 베스트 픽</div></div>` : ``;
 
-  const crownHTML = isBest ? `<div style="text-align:center"><div class="best-crown">👑 오늘의 베스트 픽</div></div>` : ``;
+    // 매집 중심가 안전 계산
+    let buyCenter = price;
+    try {
+      if (buyRange.includes('~')) {
+        const parts = buyRange.split('~');
+        const lo = parseInt((parts[0] || '').replace(/[^\d]/g,''));
+        const hi = parseInt((parts[1] || '').replace(/[^\d]/g,''));
+        if (!isNaN(lo) && !isNaN(hi)) buyCenter = Math.round((lo + hi) / 2);
+      }
+    } catch(e) { buyCenter = price; }
 
-  return `<div class="pick-card-wrap">${badge}<div class="${wrapClass}">
+    // 손절/목표 알림 배너
+    let alertBanner = "";
+    try {
+      if (stop && price > 0 && price <= stop) {
+        alertBanner = `<div style="background:rgba(251,63,94,0.15);border:1px solid rgba(251,63,94,0.4);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center;animation:blink 1s infinite">
+          🚨 <strong>손절선 도달!</strong> 현재가 ${price.toLocaleString()}원 ≤ 손절가 ${stop.toLocaleString()}원 — 즉시 매도 검토</div>`;
+      } else if (stop && price > 0 && price <= stop * 1.02) {
+        alertBanner = `<div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
+          ⚠️ <strong>손절선 근접!</strong> 현재가 ${price.toLocaleString()}원 → 손절가 ${stop.toLocaleString()}원까지 ${((price - stop) / price * 100).toFixed(1)}% 남음</div>`;
+      } else if (target && price > 0 && price >= target) {
+        alertBanner = `<div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
+          🎯 <strong>목표가 도달!</strong> 현재가 ${price.toLocaleString()}원 ≥ 목표가 ${target.toLocaleString()}원 — 익절 검토</div>`;
+      }
+    } catch(e) { alertBanner = ""; }
+
+    // 뉴스 안전 렌더링
+    const newsHTML = Array.isArray(p.news) ? p.news.map(n => `<div class="news-item">${n || ""}</div>`).join("") : `<div class="news-item">뉴스 데이터 없음</div>`;
+
+    // 섹터 안전 렌더링
+    const sectorHTML = Array.isArray(p.sector) ? p.sector.map(s => `<span class="mini-tag">#${s || ""}</span>`).join("") : `<span class="mini-tag">#-</span>`;
+
+    // 리스크 안전 렌더링
+    const risksHTML = Array.isArray(p.risks) ? p.risks.map(r => `<div class="pick-row-value" style="font-size:12.5px;margin-top:4px;color:#fb7185">• ${r || ""}</div>`).join("") : `<div class="pick-row-value" style="font-size:12.5px;margin-top:4px;color:#fb7185">• 리스크 정보 없음</div>`;
+
+    // 찬반 토론 안전 렌더링
+    let debateHTML = "";
+    try {
+      if (p.debate && typeof p.debate === 'object') {
+        const bullArr = Array.isArray(p.debate.bull) ? p.debate.bull : [];
+        const bearArr = Array.isArray(p.debate.bear) ? p.debate.bear : [];
+        debateHTML = `<div class="pick-row">
+          <div class="pick-row-label">⚔️ 찬반 토론 (AI 멀티 분석)</div>
+          <div class="debate">
+            <div class="debate-col bull"><div class="debate-label bull-label">✅ 매수 이유 (Bull)</div>${bullArr.map(b => `<div class="debate-point">${b || ""}</div>`).join("")}</div>
+            <div class="debate-col bear"><div class="debate-label bear-label">❌ 매도 이유 (Bear)</div>${bearArr.map(b => `<div class="debate-point">${b || ""}</div>`).join("")}</div>
+          </div></div>`;
+      }
+    } catch(e) { debateHTML = ""; }
+
+    // 시나리오 안전 렌더링
+    let scenarioHTML = "";
+    try {
+      if (p.scenario && typeof p.scenario === 'object') {
+        const bull = p.scenario.bull || {};
+        const base = p.scenario.base || {};
+        const bear = p.scenario.bear || {};
+        scenarioHTML = `<div class="pick-row">
+          <div class="pick-row-label">📊 시나리오 목표가 (강세/기본/약세)</div>
+          <div class="scenario-grid">
+            <div class="scenario-box bull-sc"><div class="scenario-label">🟢 강세</div><div class="scenario-price">${typeof bull.price === 'number' ? bull.price.toLocaleString() : '-'}</div><div class="scenario-pct">${bull.pct || '-'}</div><div class="scenario-desc">${bull.desc || '-'}</div></div>
+            <div class="scenario-box base-sc"><div class="scenario-label">⚪ 기본</div><div class="scenario-price">${typeof base.price === 'number' ? base.price.toLocaleString() : '-'}</div><div class="scenario-pct">${base.pct || '-'}</div><div class="scenario-desc">${base.desc || '-'}</div></div>
+            <div class="scenario-box bear-sc"><div class="scenario-label">🔴 약세</div><div class="scenario-price">${typeof bear.price === 'number' ? bear.price.toLocaleString() : '-'}</div><div class="scenario-pct">${bear.pct || '-'}</div><div class="scenario-desc">${bear.desc || '-'}</div></div>
+          </div></div>`;
+      }
+    } catch(e) { scenarioHTML = ""; }
+
+    return `<div class="pick-card-wrap">${badge}<div class="${wrapClass}">
     ${crownHTML}
     <div class="pick-top">
       <div>
-        <div class="pick-name">${p.name}</div>
-        <div class="pick-code">${p.code}</div>
-        <div class="pick-stars">${renderStars(p.stars)}</div>
+        <div class="pick-name">${p.name || "종목명 없음"}</div>
+        <div class="pick-code">${p.code || ""}</div>
+        <div class="pick-stars">${renderStars(p.stars || 0)}</div>
       </div>
       <div class="pick-price">
-        <div class="pick-price-num">${p.price.toLocaleString()}</div>
-        <div class="pick-price-chg ${chgClass}">${chgSign} ${Math.abs(p.change).toLocaleString()} (${p.changePct > 0 ? '+' : ''}${p.changePct}%)</div>
+        <div class="pick-price-num">${price.toLocaleString()}</div>
+        <div class="pick-price-chg ${chgClass}">${chgSign} ${Math.abs(change).toLocaleString()} (${changePct > 0 ? '+' : ''}${changePct}%)</div>
       </div>
     </div>
-    ${p.stop && p.price <= p.stop ? `<div style="background:rgba(251,63,94,0.15);border:1px solid rgba(251,63,94,0.4);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center;animation:blink 1s infinite">
-      🚨 <strong>손절선 도달!</strong> 현재가 ${p.price.toLocaleString()}원 ≤ 손절가 ${p.stop.toLocaleString()}원 — 즉시 매도 검토
-    </div>` : p.stop && p.price <= p.stop * 1.02 ? `<div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
-      ⚠️ <strong>손절선 근접!</strong> 현재가 ${p.price.toLocaleString()}원 → 손절가 ${p.stop.toLocaleString()}원까지 ${((p.price - p.stop) / p.price * 100).toFixed(1)}% 남음
-    </div>` : p.target && p.price >= p.target ? `<div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
-      🎯 <strong>목표가 도달!</strong> 현재가 ${p.price.toLocaleString()}원 ≥ 목표가 ${p.target.toLocaleString()}원 — 익절 검토
-    </div>` : ""}
+    ${alertBanner}
 
     <div class="pick-row">
       <div class="pick-row-label">📊 수급 상태</div>
-      <div class="pick-row-value pick-row-strong">${p.supply}</div>
+      <div class="pick-row-value pick-row-strong">${p.supply || "수급 정보 없음"}</div>
     </div>
 
     <div class="pick-row">
@@ -759,9 +826,9 @@ function renderPickCard(p, isBest) {
 
     <div class="pick-row">
       <div class="pick-row-label">💰 매수 구간 + 비중 전략</div>
-      <div class="pick-row-value"><span class="pick-row-green">${p.buyRange}</span></div>
-      <div class="pick-row-value" style="font-size:12px;color:#8890aa;margin-top:3px">${p.buyExtra}</div>
-      <div class="pick-row-value" style="font-size:12px;color:#a78bfa;margin-top:3px">⚖️ ${p.weight}</div>
+      <div class="pick-row-value"><span class="pick-row-green">${buyRange}</span></div>
+      <div class="pick-row-value" style="font-size:12px;color:#8890aa;margin-top:3px">${p.buyExtra || ""}</div>
+      <div class="pick-row-value" style="font-size:12px;color:#a78bfa;margin-top:3px">⚖️ ${p.weight || "비중 정보 없음"}</div>
     </div>
 
     <div class="pick-row">
@@ -769,85 +836,55 @@ function renderPickCard(p, isBest) {
       <div class="price-grid">
         <div class="price-box pb-buy">
           <div class="price-box-label">매집 중심</div>
-          <div class="price-box-val">${p.buyRange.includes('~') ? Math.round((parseInt(p.buyRange.split('~')[0].replace(/[^\d]/g,'')) + parseInt(p.buyRange.split('~')[1].replace(/[^\d]/g,''))) / 2).toLocaleString() : p.price.toLocaleString()}</div>
+          <div class="price-box-val">${buyCenter.toLocaleString()}</div>
           <div class="price-box-pct">기준가</div>
         </div>
         <div class="price-box pb-target">
           <div class="price-box-label">🎯 목표가</div>
-          <div class="price-box-val">${p.target.toLocaleString()}</div>
-          <div class="price-box-pct">${p.targetPct}</div>
+          <div class="price-box-val">${target ? target.toLocaleString() : '-'}</div>
+          <div class="price-box-pct">${p.targetPct || '-'}</div>
         </div>
         <div class="price-box pb-stop">
           <div class="price-box-label">🛑 손절가</div>
-          <div class="price-box-val">${p.stop.toLocaleString()}</div>
-          <div class="price-box-pct">${p.stopPct}</div>
+          <div class="price-box-val">${stop ? stop.toLocaleString() : '-'}</div>
+          <div class="price-box-pct">${p.stopPct || '-'}</div>
         </div>
       </div>
-      <div class="pick-row-value" style="text-align:center;margin-top:8px;font-size:12px">손익비 <span class="pick-row-yellow">${p.riskReward}</span></div>
+      <div class="pick-row-value" style="text-align:center;margin-top:8px;font-size:12px">손익비 <span class="pick-row-yellow">${p.riskReward || '-'}</span></div>
     </div>
 
     <div class="pick-row">
       <div class="pick-row-label">📰 뉴스 헤드라인 (추천 근거)</div>
-      ${p.news.map(n => `<div class="news-item">${n}</div>`).join("")}
+      ${newsHTML}
     </div>
 
     <div class="pick-row">
       <div class="pick-row-label">🏭 섹터 · 테마</div>
-      <div class="tag-row">${p.sector.map(s => `<span class="mini-tag">#${s}</span>`).join("")}</div>
+      <div class="tag-row">${sectorHTML}</div>
     </div>
 
     <div class="pick-row">
       <div class="pick-row-label">⏰ 유효 기간</div>
-      <div class="tag-row"><span class="mini-tag time">${p.valid}</span></div>
+      <div class="tag-row"><span class="mini-tag time">${p.valid || "미정"}</span></div>
     </div>
 
     <div class="pick-row">
       <div class="pick-row-label">⚠️ 리스크 요인</div>
-      ${p.risks.map(r => `<div class="pick-row-value" style="font-size:12.5px;margin-top:4px;color:#fb7185">• ${r}</div>`).join("")}
+      ${risksHTML}
     </div>
 
-    ${p.debate ? `<div class="pick-row">
-      <div class="pick-row-label">⚔️ 찬반 토론 (AI 멀티 분석)</div>
-      <div class="debate">
-        <div class="debate-col bull">
-          <div class="debate-label bull-label">✅ 매수 이유 (Bull)</div>
-          ${p.debate.bull.map(b => `<div class="debate-point">${b}</div>`).join("")}
-        </div>
-        <div class="debate-col bear">
-          <div class="debate-label bear-label">❌ 매도 이유 (Bear)</div>
-          ${p.debate.bear.map(b => `<div class="debate-point">${b}</div>`).join("")}
-        </div>
-      </div>
-    </div>` : ""}
-
-    ${p.scenario ? `<div class="pick-row">
-      <div class="pick-row-label">📊 시나리오 목표가 (강세/기본/약세)</div>
-      <div class="scenario-grid">
-        <div class="scenario-box bull-sc">
-          <div class="scenario-label">🟢 강세</div>
-          <div class="scenario-price">${p.scenario.bull.price.toLocaleString()}</div>
-          <div class="scenario-pct">${p.scenario.bull.pct}</div>
-          <div class="scenario-desc">${p.scenario.bull.desc}</div>
-        </div>
-        <div class="scenario-box base-sc">
-          <div class="scenario-label">⚪ 기본</div>
-          <div class="scenario-price">${p.scenario.base.price.toLocaleString()}</div>
-          <div class="scenario-pct">${p.scenario.base.pct}</div>
-          <div class="scenario-desc">${p.scenario.base.desc}</div>
-        </div>
-        <div class="scenario-box bear-sc">
-          <div class="scenario-label">🔴 약세</div>
-          <div class="scenario-price">${p.scenario.bear.price.toLocaleString()}</div>
-          <div class="scenario-pct">${p.scenario.bear.pct}</div>
-          <div class="scenario-desc">${p.scenario.bear.desc}</div>
-        </div>
-      </div>
-    </div>` : ""}
+    ${debateHTML}
+    ${scenarioHTML}
   </div></div>`;
+  } catch(e) {
+    return `<div class="pick-card-wrap"><div class="pick-card"><div style="padding:20px;text-align:center;color:#fb7185">⚠️ 카드 렌더링 오류: ${e.message || "알 수 없는 오류"}<br><small>데이터가 예상과 다른 형식입니다</small></div></div></div>`;
+  }
 }
 
 function renderMacro(m) {
-  return `<div class="section open" style="margin-bottom:14px">
+  try {
+    if (!m || typeof m !== 'object') return "";
+    return `<div class="section open" style="margin-bottom:14px">
     <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
       <div class="section-icon" style="background:rgba(96,165,250,0.15)">🌍</div>
       <div class="section-title-wrap">
@@ -857,112 +894,122 @@ function renderMacro(m) {
       <span class="chevron">▼</span>
     </div>
     <div class="section-body">
-      <div class="pick-row"><div class="pick-row-label">📢 핵심 이슈</div><div class="pick-row-value pick-row-yellow">${m.headline}</div></div>
+      <div class="pick-row"><div class="pick-row-label">📢 핵심 이슈</div><div class="pick-row-value pick-row-yellow">${m.headline || "-"}</div></div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
-        <div class="pick-row"><div class="pick-row-label">😰 VIX</div><div class="pick-row-value pick-row-green">${m.vix}</div></div>
-        <div class="pick-row"><div class="pick-row-label">🔥 SOX</div><div class="pick-row-value pick-row-yellow">${m.sox}</div></div>
-        <div class="pick-row"><div class="pick-row-label">📈 나스닥</div><div class="pick-row-value pick-row-green">${m.nasdaq}</div></div>
-        <div class="pick-row"><div class="pick-row-label">🟢 엔비디아</div><div class="pick-row-value pick-row-green">${m.nvidia}</div></div>
-        <div class="pick-row"><div class="pick-row-label">🛢️ Brent</div><div class="pick-row-value">${m.brent}</div></div>
-        <div class="pick-row"><div class="pick-row-label">🛢️ WTI</div><div class="pick-row-value">${m.wti}</div></div>
-        <div class="pick-row"><div class="pick-row-label">💱 원/달러</div><div class="pick-row-value pick-row-green">${m.usdkrw}</div></div>
-        <div class="pick-row"><div class="pick-row-label">📊 코스피</div><div class="pick-row-value pick-row-green">${m.kospi}</div></div>
+        <div class="pick-row"><div class="pick-row-label">😰 VIX</div><div class="pick-row-value pick-row-green">${m.vix || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🔥 SOX</div><div class="pick-row-value pick-row-yellow">${m.sox || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">📈 나스닥</div><div class="pick-row-value pick-row-green">${m.nasdaq || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🟢 엔비디아</div><div class="pick-row-value pick-row-green">${m.nvidia || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🛢️ Brent</div><div class="pick-row-value">${m.brent || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🛢️ WTI</div><div class="pick-row-value">${m.wti || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">💱 원/달러</div><div class="pick-row-value pick-row-green">${m.usdkrw || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">📊 코스피</div><div class="pick-row-value pick-row-green">${m.kospi || "-"}</div></div>
       </div>
     </div>
   </div>`;
+  } catch(e) { return ""; }
 }
 
 function renderTrackRecord(tr) {
-  if (!tr) return `<div class="track-section">
-    <div class="track-header">
-      <div class="track-title">📊 AI 적중률 분석</div>
-    </div>
-    <div class="track-empty">
-      장마감(15:30) 후 자동으로 분석됩니다<br>
-      추천 종목 vs 종가 비교 · 적중률 · 개선점 분석
-    </div>
-  </div>`;
+  try {
+    if (!tr || typeof tr !== 'object') return `<div class="track-section">
+      <div class="track-header"><div class="track-title">📊 AI 적중률 분석</div></div>
+      <div class="track-empty">장마감(15:30) 후 자동으로 분석됩니다<br>추천 종목 vs 종가 비교 · 적중률 · 개선점 분석</div>
+    </div>`;
 
-  const hitCount = tr.records.filter(r => r.result === "hit").length;
-  const totalCount = tr.records.length;
-  const rateClass = tr.hitRate >= 70 ? "good" : tr.hitRate >= 50 ? "warn" : "bad";
+    const records = Array.isArray(tr.records) ? tr.records : [];
+    const hitCount = records.filter(r => r && r.result === "hit").length;
+    const totalCount = records.length;
+    const hitRate = typeof tr.hitRate === 'number' ? tr.hitRate : 0;
+    const rateClass = hitRate >= 70 ? "good" : hitRate >= 50 ? "warn" : "bad";
+    const avgReturn = tr.avgReturn || "0%";
 
-  return `<div class="track-section">
-    <div class="track-header">
-      <div class="track-title">📊 AI 적중률 분석</div>
-      <div class="track-date">${tr.date} 기준</div>
-    </div>
-    <div class="track-summary">
-      <div class="track-stat">
-        <div class="track-stat-val ${rateClass}">${tr.hitRate}%</div>
-        <div class="track-stat-label">적중률</div>
+    return `<div class="track-section">
+      <div class="track-header">
+        <div class="track-title">📊 AI 적중률 분석</div>
+        <div class="track-date">${tr.date || ""} 기준</div>
       </div>
-      <div class="track-stat">
-        <div class="track-stat-val" style="color:#60a5fa">${hitCount}/${totalCount}</div>
-        <div class="track-stat-label">적중/전체</div>
+      <div class="track-summary">
+        <div class="track-stat"><div class="track-stat-val ${rateClass}">${hitRate}%</div><div class="track-stat-label">적중률</div></div>
+        <div class="track-stat"><div class="track-stat-val" style="color:#60a5fa">${hitCount}/${totalCount}</div><div class="track-stat-label">적중/전체</div></div>
+        <div class="track-stat"><div class="track-stat-val ${parseFloat(avgReturn) >= 0 ? 'good' : 'bad'}">${avgReturn}</div><div class="track-stat-label">평균 수익률</div></div>
+        ${tr.totalDays ? `<div class="track-stat"><div class="track-stat-val" style="color:#a78bfa">${tr.totalDays}일</div><div class="track-stat-label">누적 분석</div></div>` : ""}
       </div>
-      <div class="track-stat">
-        <div class="track-stat-val ${parseFloat(tr.avgReturn) >= 0 ? 'good' : 'bad'}">${tr.avgReturn}</div>
-        <div class="track-stat-label">평균 수익률</div>
-      </div>
-      ${tr.totalDays ? `<div class="track-stat">
-        <div class="track-stat-val" style="color:#a78bfa">${tr.totalDays}일</div>
-        <div class="track-stat-label">누적 분석</div>
-      </div>` : ""}
-    </div>
-    ${tr.records.map(r => `<div class="track-row">
-      <div class="track-name">${r.name}</div>
-      <div class="track-prices">추천 ${r.recPrice.toLocaleString()} → 종가 ${r.closePrice.toLocaleString()} (${r.dayReturn})</div>
-      <div class="track-result ${r.result}">${r.result === "hit" ? "✅ 적중" : r.result === "miss" ? "❌ 미스" : "➖ 보합"}</div>
-    </div>`).join("")}
-    ${tr.insight ? `<div class="track-insight">💡 <strong>AI 인사이트:</strong> ${tr.insight}</div>` : ""}
-  </div>`;
+      ${records.map(r => { try { return `<div class="track-row">
+        <div class="track-name">${(r && r.name) || "?"}</div>
+        <div class="track-prices">추천 ${r && typeof r.recPrice === 'number' ? r.recPrice.toLocaleString() : '-'} → 종가 ${r && typeof r.closePrice === 'number' ? r.closePrice.toLocaleString() : '-'} (${(r && r.dayReturn) || '-'})</div>
+        <div class="track-result ${(r && r.result) || ''}">${r && r.result === "hit" ? "✅ 적중" : r && r.result === "miss" ? "❌ 미스" : "➖ 보합"}</div>
+      </div>`; } catch(e) { return ""; } }).join("")}
+      ${tr.insight ? `<div class="track-insight">💡 <strong>AI 인사이트:</strong> ${tr.insight}</div>` : ""}
+    </div>`;
+  } catch(e) {
+    return `<div class="track-section"><div style="padding:15px;text-align:center;color:#fb7185">적중률 데이터 로딩 오류</div></div>`;
+  }
 }
 
 function renderPickPage() {
-  return `<div class="pick-header">
-    <div class="pick-header-date">💎 ${pickData.date}</div>
-    <div class="pick-header-updated">${pickData.updated}</div>
-  </div>
-  ${pickData.macro ? renderMacro(pickData.macro) : ""}
-  <div style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#fb7185;text-align:center;line-height:1.6">
-    ⚠️ <strong>투자 참고용</strong> · AI 분석은 참고 자료이며 투자 판단의 최종 책임은 본인에게 있습니다<br>반드시 본인의 원칙(진입 3종 확인 · 손절 -3%)을 지켜주세요
-  </div>
-  <div class="divider-label">🌅 아침 추천 (자동 업데이트)</div>
-  ${renderPickCard(pickData.best, true)}
-  ${pickData.top3.map(p => renderPickCard(p, false)).join("")}
+  try {
+    if (!pickData || typeof pickData !== 'object') return `<div style="padding:40px;text-align:center;color:#fb7185">⚠️ 데이터를 불러올 수 없습니다</div>`;
 
-  ${pickData.portfolio ? `<div class="portfolio-section">
-    <div class="portfolio-title">📦 포트폴리오 비중 배분</div>
-    <div class="portfolio-bars">
-      ${pickData.portfolio.items.map(it => `<div class="portfolio-bar" style="width:${it.pct}%">${it.pct}%</div>`).join("")}
-    </div>
-    <div class="portfolio-legend">
-      ${pickData.portfolio.items.map(it => `<div class="portfolio-item">
-        <div class="portfolio-item-name">${it.name}</div>
-        <div class="portfolio-item-pct">${it.pct}%</div>
-        <div class="portfolio-item-sector">${it.sector}</div>
-      </div>`).join("")}
-    </div>
-    <div class="portfolio-rule">${pickData.portfolio.rules.map(r => "• " + r).join("<br>")}</div>
-  </div>` : ""}
+    // top3 안전 처리
+    const top3 = Array.isArray(pickData.top3) ? pickData.top3 : [];
 
-  <div class="divider-label">⚡ 실시간 추천 (새로고침)</div>
-  <div class="realtime-section">
-    <div class="realtime-header">
-      <div class="realtime-title">⚡ 장중 실시간 추천</div>
-      <div class="realtime-time" id="rt-time">14:30 업데이트 — 마감 정리 가이드</div>
-    </div>
-    ${pickData.realtime ? renderPickCard(pickData.realtime, false) : `
-    <div class="realtime-empty">
-      장 시작 후 자동으로 업데이트됩니다<br>
-      <strong>09:05 · 09:20 · 10:30 · 11:30 · 14:00 · 14:30</strong><br>
-      📱 페이지 새로고침(당겨서)만 하면 최신 데이터!
-    </div>`}
-  </div>
+    // 포트폴리오 안전 렌더링
+    let portfolioHTML = "";
+    try {
+      if (pickData.portfolio && typeof pickData.portfolio === 'object') {
+        const items = Array.isArray(pickData.portfolio.items) ? pickData.portfolio.items : [];
+        const rules = Array.isArray(pickData.portfolio.rules) ? pickData.portfolio.rules : [];
+        portfolioHTML = `<div class="portfolio-section">
+          <div class="portfolio-title">📦 포트폴리오 비중 배분</div>
+          <div class="portfolio-bars">
+            ${items.map(it => `<div class="portfolio-bar" style="width:${(it && it.pct) || 0}%">${(it && it.pct) || 0}%</div>`).join("")}
+          </div>
+          <div class="portfolio-legend">
+            ${items.map(it => `<div class="portfolio-item">
+              <div class="portfolio-item-name">${(it && it.name) || "-"}</div>
+              <div class="portfolio-item-pct">${(it && it.pct) || 0}%</div>
+              <div class="portfolio-item-sector">${(it && it.sector) || "-"}</div>
+            </div>`).join("")}
+          </div>
+          <div class="portfolio-rule">${rules.map(r => "• " + (r || "")).join("<br>")}</div>
+        </div>`;
+      }
+    } catch(e) { portfolioHTML = ""; }
 
-  <div class="divider-label">📊 적중률 분석 (자동)</div>
-  ${renderTrackRecord(pickData.trackRecord)}`;
+    return `<div class="pick-header">
+      <div class="pick-header-date">💎 ${pickData.date || ""}</div>
+      <div class="pick-header-updated">${pickData.updated || ""}</div>
+    </div>
+    ${pickData.macro ? renderMacro(pickData.macro) : ""}
+    <div style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#fb7185;text-align:center;line-height:1.6">
+      ⚠️ <strong>투자 참고용</strong> · AI 분석은 참고 자료이며 투자 판단의 최종 책임은 본인에게 있습니다<br>반드시 본인의 원칙(진입 3종 확인 · 손절 -3%)을 지켜주세요
+    </div>
+    <div class="divider-label">🌅 아침 추천 (자동 업데이트)</div>
+    ${renderPickCard(pickData.best, true)}
+    ${top3.map(p => renderPickCard(p, false)).join("")}
+
+    ${portfolioHTML}
+
+    <div class="divider-label">⚡ 실시간 추천 (새로고침)</div>
+    <div class="realtime-section">
+      <div class="realtime-header">
+        <div class="realtime-title">⚡ 장중 실시간 추천</div>
+        <div class="realtime-time" id="rt-time">${pickData.realtimeLabel || "업데이트 대기 중"}</div>
+      </div>
+      ${pickData.realtime ? renderPickCard(pickData.realtime, false) : `
+      <div class="realtime-empty">
+        장 시작 후 자동으로 업데이트됩니다<br>
+        <strong>09:05 · 09:20 · 10:30 · 11:30 · 14:00 · 14:30</strong><br>
+        📱 페이지 새로고침(당겨서)만 하면 최신 데이터!
+      </div>`}
+    </div>
+
+    <div class="divider-label">📊 적중률 분석 (자동)</div>
+    ${renderTrackRecord(pickData.trackRecord)}`;
+  } catch(e) {
+    return `<div style="padding:40px;text-align:center;color:#fb7185">⚠️ 페이지 렌더링 오류: ${e.message || "알 수 없는 오류"}<br><small>페이지를 새로고침해 주세요</small></div>`;
+  }
 }
 
 // ===== DATA =====
