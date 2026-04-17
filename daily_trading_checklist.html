@@ -693,13 +693,13 @@ const pickData = {
     hitRate: null,
     totalDays: 1,
     avgReturn: "N/A",
-    insight: "⚠️ KRX + 다음 모두 4/17 종가 조회 실패 (16:16 KST 재시도). KRX(data.krx.co.kr) 메인·개별종목·OpenAPI 모두 403/차단 또는 내부서버 에러 반환. 다음 금융(finance.daum.net·m.finance.daum.net)은 JS 렌더링 기반이라 HTML 프록시로 가격 데이터 추출 불가. 다음 wisefn 경로(wisefn.finance.daum.net)만 응답했으나 'Updated 26.04.16' 즉 4/16 종가만 표시 (HPSP 44,150·두산E 110,800·LS 188,600 — 모두 4/17 아님, 검증값 아님). '종가 추정·드리프트 금지' 원칙에 따라 closePrice: null 유지. 월요일 전략은 realtime 블록의 14:30 장중 시세(HPSP +2.1%·두산 -0.9%·LS -1.4%)만 참고하되 실제 종가와 다를 수 있으므로 사용자가 HTS/MTS에서 직접 확인한 뒤 수동 갱신 필요.",
+    insight: "⚠️ KRX + 다음 모두 4/17 종가 조회 실패 (16:20 KST 재재시도). KRX(data.krx.co.kr) 메인·개별종목·OpenAPI·MDCSTAT JSON 엔드포인트 모두 403/에러 반환. 다음 금융(finance.daum.net·m.finance.daum.net·finance.daum.net/api)은 JS 렌더링 또는 403 응답으로 4/17 가격 데이터 추출 불가. 다음 wisefn 경로(wisefn.finance.daum.net)는 응답하나 여전히 'Updated 26.04.16' 4/16 종가만 표시 (HPSP 44,150·두산E 110,800·LS 188,600 — 4/17 미반영, 검증값 아님). '종가 추정·드리프트 금지' 원칙에 따라 closePrice: null 유지. 월요일 전략은 realtime 블록의 14:30 장중 시세(HPSP +2.1%·두산 -0.9%·LS -1.4%)만 참고하되 실제 종가와 다를 수 있으므로 사용자가 HTS/MTS에서 직접 확인한 뒤 수동 갱신 필요.",
     tomorrowWatch: [
       "SK하이닉스 (000660): 4/23 실적 발표 D-3 · 영업이익 40조 기대감 선반영 · HBM4 본격 양산 모멘텀 — 월요일 시초가 추격 가능",
       "한미반도체 (042700): HBM 본더 장비 독점 · SK하이닉스 실적 직접 수혜 밸류체인 1티어 · 금요일 외인 순매수 지속 확인 시 관심",
       "두산에너빌리티 (034020, 재관찰): 손절선(107,000원) 위에서 버팀 · 미국 원전 수주 뉴스플로우 재점화 시 반등 가능 · 105,000원 지지선 주목"
     ],
-    dataSource: "⚠️ KRX + 다음 교차검증 실패 — KRX data.krx.co.kr 403/에러 · 다음 finance.daum.net JS렌더링으로 가격 추출 불가 · 다음 wisefn은 4/16 종가만 노출 (4/17 데이터 미반영). 수동 종가 확인 필요 (4/17 16:16 KST 재시도 실패)"
+    dataSource: "⚠️ KRX + 다음 교차검증 실패 — KRX data.krx.co.kr 403/에러 · 다음 finance.daum.net JS렌더링으로 가격 추출 불가 · 다음 wisefn은 4/16 종가만 노출 (4/17 데이터 미반영). 수동 종가 확인 필요 (4/17 16:20 KST 재재시도도 동일 실패)"
   },
   // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
   // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
