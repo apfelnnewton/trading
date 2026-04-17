@@ -420,6 +420,33 @@
   .realtime-btn:hover { background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(52, 211, 153, 0.25)); }
   .realtime-empty { text-align: center; padding: 20px; color: #555; font-size: 13px; line-height: 1.8; }
 
+  /* 적중률 분석 */
+  .track-section { background: linear-gradient(135deg, #0f1420, #14182a); border: 1px solid #22263a; border-radius: 16px; padding: 16px; margin-top: 20px; }
+  .track-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .track-title { font-size: 15px; font-weight: 700; color: #e8e8ee; }
+  .track-date { font-size: 11px; color: #8890aa; }
+  .track-summary { display: flex; gap: 10px; margin-bottom: 14px; }
+  .track-stat { flex: 1; background: rgba(30,30,50,0.6); border-radius: 12px; padding: 12px 8px; text-align: center; }
+  .track-stat-val { font-size: 22px; font-weight: 800; }
+  .track-stat-val.good { color: #34d399; }
+  .track-stat-val.warn { color: #fbbf24; }
+  .track-stat-val.bad { color: #fb7185; }
+  .track-stat-label { font-size: 10px; color: #8890aa; margin-top: 4px; }
+  .track-row { display: flex; align-items: center; gap: 8px; padding: 10px; background: rgba(20,20,40,0.5); border-radius: 10px; margin-bottom: 6px; }
+  .track-name { flex: 1; font-size: 13px; font-weight: 600; }
+  .track-prices { font-size: 11px; color: #8890aa; flex: 2; }
+  .track-result { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .track-result.hit { background: rgba(52,211,153,0.15); color: #34d399; }
+  .track-result.miss { background: rgba(251,113,133,0.15); color: #fb7185; }
+  .track-result.neutral { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .track-insight { margin-top: 12px; padding: 10px 12px; background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); border-radius: 10px; font-size: 12px; color: #93c5fd; line-height: 1.6; }
+  .track-empty { text-align: center; padding: 20px; color: #555; font-size: 13px; line-height: 1.8; }
+  .track-streak { display: flex; gap: 4px; justify-content: center; margin-top: 8px; }
+  .track-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .track-dot.hit { background: #34d399; }
+  .track-dot.miss { background: #fb7185; }
+  .track-dot.neutral { background: #fbbf24; }
+
   .divider-label {
     text-align: center; font-size: 13px; font-weight: 700;
     color: #8890aa; margin: 20px 0 14px;
@@ -612,6 +639,19 @@ const pickData = {
       "원전+전력 합산 50% — 에너지 슈퍼사이클 수혜 분산"
     ]
   },
+  trackRecord: null,
+  // trackRecord 데이터 예시 (15:30 장마감 후 자동 채워짐):
+  // trackRecord: {
+  //   date: "4월 17일",
+  //   records: [
+  //     { name: "HPSP", recPrice: 44900, closePrice: 45200, dayReturn: "+0.67%", result: "hit", targetHit: false, stopHit: false },
+  //     { name: "두산에너빌리티", recPrice: 108800, closePrice: 107500, dayReturn: "-1.19%", result: "miss", targetHit: false, stopHit: false },
+  //   ],
+  //   hitRate: 75,
+  //   totalDays: 1,
+  //   avgReturn: "+0.5%",
+  //   insight: "반도체 섹터 추천 적중률 높음, 원전 섹터는 변동성 주의"
+  // },
   realtime: {
     rank: "실시간 베스트",
     name: "삼성전기",
@@ -819,6 +859,53 @@ function renderMacro(m) {
   </div>`;
 }
 
+function renderTrackRecord(tr) {
+  if (!tr) return `<div class="track-section">
+    <div class="track-header">
+      <div class="track-title">📊 AI 적중률 분석</div>
+    </div>
+    <div class="track-empty">
+      장마감(15:30) 후 자동으로 분석됩니다<br>
+      추천 종목 vs 종가 비교 · 적중률 · 개선점 분석
+    </div>
+  </div>`;
+
+  const hitCount = tr.records.filter(r => r.result === "hit").length;
+  const totalCount = tr.records.length;
+  const rateClass = tr.hitRate >= 70 ? "good" : tr.hitRate >= 50 ? "warn" : "bad";
+
+  return `<div class="track-section">
+    <div class="track-header">
+      <div class="track-title">📊 AI 적중률 분석</div>
+      <div class="track-date">${tr.date} 기준</div>
+    </div>
+    <div class="track-summary">
+      <div class="track-stat">
+        <div class="track-stat-val ${rateClass}">${tr.hitRate}%</div>
+        <div class="track-stat-label">적중률</div>
+      </div>
+      <div class="track-stat">
+        <div class="track-stat-val" style="color:#60a5fa">${hitCount}/${totalCount}</div>
+        <div class="track-stat-label">적중/전체</div>
+      </div>
+      <div class="track-stat">
+        <div class="track-stat-val ${parseFloat(tr.avgReturn) >= 0 ? 'good' : 'bad'}">${tr.avgReturn}</div>
+        <div class="track-stat-label">평균 수익률</div>
+      </div>
+      ${tr.totalDays ? `<div class="track-stat">
+        <div class="track-stat-val" style="color:#a78bfa">${tr.totalDays}일</div>
+        <div class="track-stat-label">누적 분석</div>
+      </div>` : ""}
+    </div>
+    ${tr.records.map(r => `<div class="track-row">
+      <div class="track-name">${r.name}</div>
+      <div class="track-prices">추천 ${r.recPrice.toLocaleString()} → 종가 ${r.closePrice.toLocaleString()} (${r.dayReturn})</div>
+      <div class="track-result ${r.result}">${r.result === "hit" ? "✅ 적중" : r.result === "miss" ? "❌ 미스" : "➖ 보합"}</div>
+    </div>`).join("")}
+    ${tr.insight ? `<div class="track-insight">💡 <strong>AI 인사이트:</strong> ${tr.insight}</div>` : ""}
+  </div>`;
+}
+
 function renderPickPage() {
   return `<div class="pick-header">
     <div class="pick-header-date">💎 ${pickData.date}</div>
@@ -859,7 +946,10 @@ function renderPickPage() {
       <strong>09:05 · 09:20 · 10:30 · 11:30 · 14:00 · 14:30</strong><br>
       📱 페이지 새로고침(당겨서)만 하면 최신 데이터!
     </div>`}
-  </div>`;
+  </div>
+
+  <div class="divider-label">📊 적중률 분석 (자동)</div>
+  ${renderTrackRecord(pickData.trackRecord)}`;
 }
 
 // ===== DATA =====
