@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Daily Trading Checklist</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+    background: #0a0a0f;
+    color: #e8e8ee;
+    min-height: 100vh;
+    padding-bottom: 40px;
+  }
+  .container { max-width: 430px; margin: 0 auto; padding: 16px; }
+
+  /* Header */
+  .header-card {
+    background: linear-gradient(135deg, #0f1420 0%, #14182a 100%);
+    border: 1px solid #22263a;
+    border-radius: 18px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .tag-top {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(52, 211, 153, 0.12);
+    color: #34d399;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+  .tag-top::before { content: ""; width: 6px; height: 6px; background: #34d399; border-radius: 50%; }
+  .title { font-size: 26px; font-weight: 700; color: #fff; }
+  .title-accent { color: #a78bfa; }
+
+  /* Tabs */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    background: #14182a;
+    border-radius: 14px;
+    padding: 4px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+  }
+  .tab {
+    flex: 1;
+    min-width: fit-content;
+    padding: 10px 8px;
+    font-size: 13px;
+    color: #8890aa;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .tab.active { background: rgba(167, 139, 250, 0.12); color: #a78bfa; box-shadow: 0 0 0 1px rgba(167, 139, 250, 0.3); }
+  .tab-ico { font-size: 14px; }
+
+  /* Sections */
+  .section {
+    background: #11131f;
+    border: 1px solid #1f2238;
+    border-radius: 16px;
+    margin-bottom: 14px;
+    overflow: hidden;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .section-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    margin-right: 12px;
+    flex-shrink: 0;
+  }
+  .section-title-wrap { flex: 1; }
+  .section-time { font-size: 12px; color: #a78bfa; font-weight: 600; margin-bottom: 2px; }
+  .section-title { font-size: 17px; font-weight: 700; color: #fff; }
+  .section-count {
+    background: rgba(167, 139, 250, 0.15);
+    color: #a78bfa;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin-right: 8px;
+  }
+  .chevron { color: #555; transition: transform 0.25s; font-size: 12px; }
+  .section.open .chevron { transform: rotate(180deg); }
+  .section-body { display: none; padding: 0 12px 12px; }
+  .section.open .section-body { display: block; }
+
+  /* Item */
+  .item {
+    background: #181b2e;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .item:hover { background: #1c2035; }
+  .item.checked { opacity: 0.55; }
+  .item.checked .item-title { text-decoration: line-through; }
+  .badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 9px;
+    border-radius: 999px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .b-필수 { background: rgba(244, 63, 94, 0.15); color: #fb7185; }
+  .b-선택 { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
+  .b-이벤트 { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .b-좋음 { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .b-이상 { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
+  .b-매수 { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+  .b-매매 { background: rgba(251, 146, 60, 0.15); color: #fb923c; }
+  .b-골든 { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .b-자동 { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .b-3분 { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .b-1분 { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .b-전환 { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .b-진입 { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .b-num { background: rgba(167, 139, 250, 0.15); color: #a78bfa; font-family: ui-monospace, monospace; }
+  .item-body { flex: 1; min-width: 0; }
+  .item-title { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+  .item-desc { font-size: 12.5px; color: #8890aa; line-height: 1.5; }
+
+  /* Bullet list (단타 원칙 / 주식 지식) */
+  .bullet-item {
+    background: #181b2e;
+    border-radius: 10px;
+    padding: 11px 14px;
+    margin-top: 6px;
+    font-size: 13.5px;
+    color: #dcdce6;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    cursor: pointer;
+  }
+  .bullet-item::before {
+    content: "";
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+  .bullet-item.checked { opacity: 0.5; }
+  .bullet-item.checked .bullet-text { text-decoration: line-through; }
+  .dot-green::before { background: #34d399; }
+  .dot-red::before { background: #fb7185; }
+  .dot-yellow::before { background: #fbbf24; }
+  .dot-purple::before { background: #a78bfa; }
+  .dot-orange::before { background: #fb923c; }
+  .bullet-text { flex: 1; line-height: 1.5; }
+
+  /* Core principle */
+  .core {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.08), rgba(167, 139, 250, 0.08));
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 16px;
+    text-align: center;
+  }
+  .core-title { font-weight: 700; color: #fbbf24; font-size: 14px; margin-bottom: 10px; }
+  .core-line { font-size: 12.5px; color: #b8bccc; line-height: 1.8; }
+
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .progress {
+    background: #181b2e;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-bar { flex: 1; height: 8px; background: #22263a; border-radius: 999px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #a78bfa, #34d399); width: 0%; transition: width 0.3s; }
+  .progress-text { font-size: 12px; color: #a78bfa; font-weight: 600; white-space: nowrap; }
+
+  .reset-btn {
+    width: 100%;
+    padding: 12px;
+    background: #181b2e;
+    border: 1px solid #22263a;
+    color: #8890aa;
+    border-radius: 12px;
+    font-size: 13px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  .reset-btn:hover { color: #fb7185; border-color: rgba(244, 63, 94, 0.3); }
+
+  /* ===== 오늘의 추천 ===== */
+  .pick-header {
+    background: linear-gradient(135deg, rgba(251, 191, 36, 0.12), rgba(167, 139, 250, 0.12));
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 16px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .pick-header-date { font-size: 12px; color: #fbbf24; font-weight: 600; margin-bottom: 4px; }
+  .pick-header-updated { font-size: 11px; color: #8890aa; }
+
+  .best-pick {
+    background: linear-gradient(135deg, #1a1530 0%, #1f1a3d 100%);
+    border: 2px solid #fbbf24;
+    border-radius: 18px;
+    padding: 18px;
+    margin-bottom: 18px;
+    position: relative;
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.15);
+  }
+  .best-crown {
+    display: inline-block;
+    background: linear-gradient(135deg, #fbbf24, #fb923c);
+    color: #0a0a0f; font-weight: 800; font-size: 14px;
+    padding: 8px 18px; border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+    margin-bottom: 12px;
+    text-align: center;
+  }
+  .pick-card {
+    background: #11131f;
+    border: 1px solid #1f2238;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 14px;
+  }
+  .pick-rank {
+    position: absolute; top: -10px; left: 14px;
+    background: #22263a;
+    color: #a78bfa;
+    font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid rgba(167, 139, 250, 0.4);
+  }
+  .pick-card-wrap { position: relative; margin-top: 12px; }
+
+  .pick-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
+  .pick-name { font-size: 20px; font-weight: 800; color: #fff; }
+  .pick-code { font-size: 11px; color: #8890aa; font-family: ui-monospace, monospace; margin-top: 2px; }
+  .pick-price { text-align: right; }
+  .pick-price-num { font-size: 22px; font-weight: 800; color: #fff; }
+  .pick-price-chg { font-size: 12px; font-weight: 600; }
+  .chg-up { color: #fb7185; }
+  .chg-down { color: #60a5fa; }
+  .pick-stars { color: #fbbf24; font-size: 18px; letter-spacing: 2px; margin-top: 4px; }
+  .pick-stars .off { color: #3a3d5a; }
+
+  .pick-row {
+    background: #181b2e;
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .pick-row-label {
+    font-size: 11px; color: #8890aa; font-weight: 600;
+    margin-bottom: 4px; display: flex; align-items: center; gap: 4px;
+  }
+  .pick-row-value { font-size: 13.5px; color: #e8e8ee; line-height: 1.55; }
+  .pick-row-strong { color: #fff; font-weight: 700; }
+  .pick-row-purple { color: #a78bfa; font-weight: 700; }
+  .pick-row-green { color: #34d399; font-weight: 700; }
+  .pick-row-red { color: #fb7185; font-weight: 700; }
+  .pick-row-yellow { color: #fbbf24; font-weight: 700; }
+
+  .signal-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 4px; }
+  .signal-chip {
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.3);
+    color: #34d399;
+    padding: 6px 4px; border-radius: 8px;
+    font-size: 11px; font-weight: 600; text-align: center;
+  }
+  .signal-chip.off { background: rgba(136, 144, 170, 0.08); border-color: rgba(136, 144, 170, 0.2); color: #8890aa; }
+
+  .price-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .price-box { background: #181b2e; border-radius: 10px; padding: 10px; text-align: center; }
+  .price-box-label { font-size: 10px; color: #8890aa; margin-bottom: 4px; }
+  .price-box-val { font-size: 13px; font-weight: 700; }
+  .pb-buy { border: 1px solid rgba(52, 211, 153, 0.3); }
+  .pb-buy .price-box-val { color: #34d399; }
+  .pb-target { border: 1px solid rgba(251, 191, 36, 0.3); }
+  .pb-target .price-box-val { color: #fbbf24; }
+  .pb-stop { border: 1px solid rgba(244, 63, 94, 0.3); }
+  .pb-stop .price-box-val { color: #fb7185; }
+  .price-box-pct { font-size: 10px; color: #8890aa; margin-top: 2px; }
+
+  .news-item {
+    font-size: 12.5px; color: #dcdce6; line-height: 1.5;
+    padding: 6px 0;
+    border-bottom: 1px solid #22263a;
+  }
+  .news-item:last-child { border-bottom: none; }
+  .news-item::before { content: "📰 "; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mini-tag {
+    background: rgba(167, 139, 250, 0.12);
+    color: #a78bfa;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 9px; border-radius: 999px;
+  }
+  .mini-tag.risk { background: rgba(244, 63, 94, 0.12); color: #fb7185; }
+  .mini-tag.time { background: rgba(96, 165, 250, 0.12); color: #60a5fa; }
+
+  .update-btn {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.15), rgba(52, 211, 153, 0.15));
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    color: #a78bfa;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 16px;
+  }
+  .update-btn:hover { background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(52, 211, 153, 0.22)); }
+
+  /* ===== 찬반 토론 ===== */
+  .debate { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 6px; }
+  .debate-col { background: #181b2e; border-radius: 10px; padding: 10px 12px; }
+  .debate-col.bull { border-left: 3px solid #34d399; }
+  .debate-col.bear { border-left: 3px solid #fb7185; }
+  .debate-label { font-size: 11px; font-weight: 700; margin-bottom: 6px; }
+  .debate-label.bull-label { color: #34d399; }
+  .debate-label.bear-label { color: #fb7185; }
+  .debate-point { font-size: 11.5px; color: #ccc; line-height: 1.5; padding: 3px 0; }
+  .debate-point::before { content: "• "; }
+
+  /* ===== 시나리오 ===== */
+  .scenario-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 6px; }
+  .scenario-box { border-radius: 10px; padding: 12px 8px; text-align: center; }
+  .scenario-box.bull-sc { background: rgba(52, 211, 153, 0.08); border: 1px solid rgba(52, 211, 153, 0.3); }
+  .scenario-box.base-sc { background: rgba(167, 139, 250, 0.08); border: 1px solid rgba(167, 139, 250, 0.3); }
+  .scenario-box.bear-sc { background: rgba(244, 63, 94, 0.08); border: 1px solid rgba(244, 63, 94, 0.3); }
+  .scenario-label { font-size: 10px; font-weight: 700; margin-bottom: 4px; }
+  .scenario-box.bull-sc .scenario-label { color: #34d399; }
+  .scenario-box.base-sc .scenario-label { color: #a78bfa; }
+  .scenario-box.bear-sc .scenario-label { color: #fb7185; }
+  .scenario-price { font-size: 15px; font-weight: 800; color: #fff; }
+  .scenario-pct { font-size: 11px; margin-top: 2px; }
+  .scenario-box.bull-sc .scenario-pct { color: #34d399; }
+  .scenario-box.base-sc .scenario-pct { color: #a78bfa; }
+  .scenario-box.bear-sc .scenario-pct { color: #fb7185; }
+  .scenario-desc { font-size: 10px; color: #8890aa; margin-top: 4px; line-height: 1.4; }
+
+  /* ===== 포트폴리오 비중 ===== */
+  .portfolio-section {
+    background: linear-gradient(135deg, rgba(52, 211, 153, 0.06), rgba(167, 139, 250, 0.06));
+    border: 1px solid rgba(167, 139, 250, 0.25);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .portfolio-title { font-size: 15px; font-weight: 700; color: #fff; margin-bottom: 12px; text-align: center; }
+  .portfolio-bars { display: flex; height: 32px; border-radius: 8px; overflow: hidden; margin-bottom: 10px; }
+  .portfolio-bar { display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; }
+  .portfolio-bar:nth-child(1) { background: linear-gradient(135deg, #fbbf24, #fb923c); }
+  .portfolio-bar:nth-child(2) { background: linear-gradient(135deg, #a78bfa, #818cf8); }
+  .portfolio-bar:nth-child(3) { background: linear-gradient(135deg, #34d399, #22d3ee); }
+  .portfolio-legend { display: flex; justify-content: space-around; gap: 8px; }
+  .portfolio-item { text-align: center; flex: 1; }
+  .portfolio-item-name { font-size: 13px; font-weight: 700; color: #fff; }
+  .portfolio-item-pct { font-size: 18px; font-weight: 800; color: #fbbf24; margin: 2px 0; }
+  .portfolio-item-sector { font-size: 10px; color: #8890aa; }
+  .portfolio-rule { font-size: 11px; color: #8890aa; text-align: center; margin-top: 10px; line-height: 1.6; }
+
+  /* ===== 실시간 새로고침 ===== */
+  .realtime-section {
+    background: #11131f;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  .realtime-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .realtime-title { font-size: 16px; font-weight: 700; color: #60a5fa; }
+  .realtime-time { font-size: 11px; color: #8890aa; }
+  .realtime-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, rgba(96, 165, 250, 0.15), rgba(52, 211, 153, 0.15));
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #60a5fa;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .realtime-btn:hover { background: linear-gradient(135deg, rgba(96, 165, 250, 0.25), rgba(52, 211, 153, 0.25)); }
+  .realtime-empty { text-align: center; padding: 20px; color: #555; font-size: 13px; line-height: 1.8; }
+
+  /* ===== 장중 신규 발굴 종목 (누적) ===== */
+  .intraday-section {
+    background: linear-gradient(135deg, rgba(251, 146, 60, 0.05), rgba(251, 191, 36, 0.05));
+    border: 1px solid rgba(251, 146, 60, 0.3);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 16px;
+  }
+  .intraday-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .intraday-title { font-size: 16px; font-weight: 800; color: #fb923c; display: flex; align-items: center; gap: 6px; }
+  .intraday-count { font-size: 11px; color: #8890aa; background: rgba(251,146,60,0.12); padding: 3px 9px; border-radius: 999px; }
+  .intraday-help { font-size: 11px; color: #8890aa; margin-bottom: 10px; line-height: 1.5; }
+  .intraday-card {
+    background: #14182a;
+    border: 1px solid #22263a;
+    border-left: 3px solid #fb923c;
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .intraday-card.style-swing { border-left-color: #a78bfa; }
+  .intraday-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; }
+  .intraday-time { font-size: 11px; font-weight: 700; color: #fb923c; background: rgba(251,146,60,0.12); padding: 3px 8px; border-radius: 6px; font-family: ui-monospace, monospace; }
+  .intraday-slot { font-size: 11px; color: #a78bfa; background: rgba(167,139,250,0.12); padding: 3px 8px; border-radius: 6px; }
+  .intraday-style { font-size: 11px; color: #34d399; background: rgba(52,211,153,0.12); padding: 3px 8px; border-radius: 6px; }
+  .intraday-style.swing { color: #a78bfa; background: rgba(167,139,250,0.12); }
+  .intraday-name-row { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
+  .intraday-name { font-size: 17px; font-weight: 800; color: #fff; }
+  .intraday-code { font-size: 11px; color: #8890aa; margin-left: 6px; }
+  .intraday-price { font-size: 15px; font-weight: 700; color: #fff; text-align: right; }
+  .intraday-reason { font-size: 12.5px; color: #fbbf24; background: rgba(251,191,36,0.08); border-radius: 8px; padding: 8px 10px; margin: 6px 0; line-height: 1.55; }
+  .intraday-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-top: 8px; }
+  .intraday-kv { background: rgba(20,23,40,0.6); border-radius: 8px; padding: 7px 8px; text-align: center; }
+  .intraday-kv-label { font-size: 10px; color: #8890aa; }
+  .intraday-kv-val { font-size: 12px; font-weight: 700; margin-top: 2px; }
+  .intraday-kv-buy { color: #fbbf24; }
+  .intraday-kv-target { color: #34d399; }
+  .intraday-kv-stop { color: #fb7185; }
+  .intraday-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 11px; color: #8890aa; }
+  .intraday-rr { color: #a78bfa; font-weight: 700; }
+  .intraday-empty { text-align: center; padding: 20px; color: #555; font-size: 12.5px; line-height: 1.8; }
+
+  /* 적중률 분석 */
+  .track-section { background: linear-gradient(135deg, #0f1420, #14182a); border: 1px solid #22263a; border-radius: 16px; padding: 16px; margin-top: 20px; }
+  .track-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .track-title { font-size: 15px; font-weight: 700; color: #e8e8ee; }
+  .track-date { font-size: 11px; color: #8890aa; }
+  .track-summary { display: flex; gap: 10px; margin-bottom: 14px; }
+  .track-stat { flex: 1; background: rgba(30,30,50,0.6); border-radius: 12px; padding: 12px 8px; text-align: center; }
+  .track-stat-val { font-size: 22px; font-weight: 800; }
+  .track-stat-val.good { color: #34d399; }
+  .track-stat-val.warn { color: #fbbf24; }
+  .track-stat-val.bad { color: #fb7185; }
+  .track-stat-label { font-size: 10px; color: #8890aa; margin-top: 4px; }
+  .track-row { display: flex; align-items: center; gap: 8px; padding: 10px; background: rgba(20,20,40,0.5); border-radius: 10px; margin-bottom: 6px; }
+  .track-name { flex: 1; font-size: 13px; font-weight: 600; }
+  .track-prices { font-size: 11px; color: #8890aa; flex: 2; }
+  .track-result { font-size: 12px; font-weight: 700; padding: 3px 8px; border-radius: 6px; }
+  .track-result.hit { background: rgba(52,211,153,0.15); color: #34d399; }
+  .track-result.miss { background: rgba(251,113,133,0.15); color: #fb7185; }
+  .track-result.neutral { background: rgba(251,191,36,0.15); color: #fbbf24; }
+  .track-insight { margin-top: 12px; padding: 10px 12px; background: rgba(96,165,250,0.08); border: 1px solid rgba(96,165,250,0.2); border-radius: 10px; font-size: 12px; color: #93c5fd; line-height: 1.6; }
+  .track-empty { text-align: center; padding: 20px; color: #555; font-size: 13px; line-height: 1.8; }
+  .track-streak { display: flex; gap: 4px; justify-content: center; margin-top: 8px; }
+  .track-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .track-dot.hit { background: #34d399; }
+  .track-dot.miss { background: #fb7185; }
+  .track-dot.neutral { background: #fbbf24; }
+
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+  .divider-label {
+    text-align: center; font-size: 13px; font-weight: 700;
+    color: #8890aa; margin: 20px 0 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .divider-label::before, .divider-label::after {
+    content: ""; flex: 1; height: 1px; background: #22263a;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="header-card">
+    <div class="tag-top">단타 트레이딩 대시보드</div>
+    <div class="title">Daily Trading <span class="title-accent">Checklist</span></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-page="pick"><span class="tab-ico">💎</span> 오늘의 추천</button>
+    <button class="tab" data-page="routine"><span class="tab-ico">📅</span> 일과 루틴</button>
+    <button class="tab" data-page="indicator"><span class="tab-ico">📈</span> 지표 설정</button>
+    <button class="tab" data-page="rule"><span class="tab-ico">⚠️</span> 단타 원칙</button>
+    <button class="tab" data-page="knowledge"><span class="tab-ico">🧠</span> 주식 지식</button>
+  </div>
+
+  <div class="progress">
+    <div class="progress-text">오늘 진행</div>
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <div class="progress-text" id="ptext">0 / 0</div>
+  </div>
+
+  <!-- PAGE: 오늘의 추천 -->
+  <div class="page active" id="page-pick"></div>
+
+  <!-- PAGE: 일과 루틴 -->
+  <div class="page" id="page-routine"></div>
+
+  <!-- PAGE: 지표 설정 -->
+  <div class="page" id="page-indicator"></div>
+
+  <!-- PAGE: 단타 원칙 -->
+  <div class="page" id="page-rule"></div>
+
+  <!-- PAGE: 주식 지식 -->
+  <div class="page" id="page-knowledge"></div>
+
+  <button class="reset-btn" onclick="resetChecks()">🔄 오늘 체크 초기화</button>
+
+</div>
+
+<script>
+// ===== 오늘의 추천 샘플 데이터 =====
+const pickData = {
+  date: "2026년 4월 17일 (금) 추천",
+  updated: "4월 17일 15:40 장마감 분석 (종가 실측 정정 시도 — 데이터 소스 차단) — Claude 자동 분석",
+  macro: {
+    vix: "18.17 (안정 ✅)",
+    sox: "9,040 (+1.3%, 사상 최고치 근접 🔥)",
+    nasdaq: "22,903 (+0.35%)",
+    nvidia: "$199.63 (+0.38%)",
+    brent: "$94.66", wti: "$90.72",
+    usdkrw: "1,475원 (외인 우호 ✅)",
+    kospi: "6,226 (+2.21%, 6200선 안착)",
+    kosdaq: "+0.91%",
+    headline: "종전 기대감 · 외인 4월 5.8조 순매수 · 원전+광통신 테마 급등 · SK하이닉스 실적 D-5"
+  },
+  best: {
+    rank: "베스트 픽",
+    name: "HPSP",
+    code: "KRX 403870",
+    price: 44900,
+    change: 750,
+    changePct: 1.70,
+    stars: 5,
+    supply: "외인+기관 쌍끌이 매수 지속 · SOX 사상 최고치 연동 — HBM4 밸류체인 수급 최강 💪",
+    signals: { sar: true, vr: true, boll: true, vrValue: "기관 +180억 순매수", sarNote: "외인 4월 5.8조 순매수 지속", bollNote: "전일 대비 거래량 2.1배" },
+    buyRange: "43,000 ~ 44,500원",
+    buyExtra: "42,000원 아래 추가매수 (볼린저 중심선 지지 확인)",
+    weight: "첫 매수 5% → 추가 5%씩 (최대 20%)",
+    target: 47500, stop: 42500,
+    targetPct: "+7.6%", stopPct: "-3.7%",
+    riskReward: "1 : 2.1",
+    news: [
+      "SOX 9,040 사상 최고치 근접 — 국내 반도체 소부장 전 종목 수혜 직결",
+      "SK하이닉스 4/23 실적 발표 D-5 — 영업이익 40조 돌파 전망 · HPSP 장비 수주 확대",
+      "외인 4월 5.8조 순매수 — 반도체 중심 수급 폭발 (뉴데일리)",
+      "HBM4 양산 본격화 → 고온고압 아닐링 장비 독점 HPSP 실적 퀀텀점프 예상"
+    ],
+    debate: {
+      bull: ["SOX 사상 최고 + SK하이닉스 실적 기대 → HBM4 밸류체인 전체 수혜", "외인 4월 5.8조 순매수 → 반도체 장비 모멘텀 극강", "4/23 SK하이닉스 실적 발표 → 영업이익 40조 기대감 선반영"],
+      bear: ["52주 저점 대비 2배 구간 → 차익실현 매물 출회 가능", "KOSPI 6200 급등 후 단기 과열 경고", "외인 단독 매수 구간 → 기관 미참여 시 힘 빠질 수 있음"]
+    },
+    scenario: {
+      bull: { price: 48000, pct: "+8.7%", desc: "SOX 신고가 + SK하이닉스 실적 서프라이즈" },
+      base: { price: 47500, pct: "+7.6%", desc: "현 추세 유지, 수급 지속" },
+      bear: { price: 40000, pct: "-9.4%", desc: "SOX 조정 + 외인 이탈 시" }
+    },
+    sector: ["반도체 장비", "HBM4 수혜", "SK하이닉스 밸류체인"],
+    valid: "당일 단타 + 4/23 실적까지 스윙 가능",
+    risks: [
+      "KOSPI 6200 돌파 후 단기 차익실현 매물 출회 가능",
+      "외인 단독 매수 시 기관 가담 여부 09:30 확인 필수",
+      "반도체 섹터 연속 상승 후 숨고르기 리스크"
+    ]
+  },
+  top3: [
+    {
+      rank: "2위",
+      name: "두산에너빌리티",
+      code: "KRX 034020",
+      price: 108800, change: -2000, changePct: -1.81, stars: 4,
+      supply: "외인+기관 동반 매수 · 원전 수주 기대감 폭발 — 시총 70조 돌파",
+      signals: { sar: true, vr: true, boll: true, vrValue: "기관 +250억 순매수", sarNote: "외인 4월 순매수 지속", bollNote: "전일 대비 거래량 1.8배" },
+      buyRange: "108,000 ~ 112,000원",
+      buyExtra: "105,000원 아래 추가매수 (20일선 지지)",
+      weight: "첫 매수 5% → 추가 5% (최대 15%)",
+      target: 118000, stop: 107000,
+      targetPct: "+6.8%", stopPct: "-3.2%",
+      riskReward: "1 : 2.1",
+      news: [
+        "미국 원전 건설 추진 → 한국형 원전 수출 기대감 폭발 (글로벌이코노믹)",
+        "유진투자증권 목표가 15만원 제시 · 올해 매출 18조 영업이익 1조 전망",
+        "원전 수주 본격화 — 증권가 호평 속 주가 +6% 강세 (네이트뉴스)",
+        "시가총액 70조 돌파 · 코스피 시총 9위 — 대형 원전주 부상"
+      ],
+      debate: {
+        bull: ["미국 원전 건설 → 한국형 원전 글로벌 수주 기대", "증권가 일제히 목표가 상향 (15만원) → 상승 여력 충분", "원전 슈퍼사이클 진입 + 정부 에너지 정책 수혜"],
+        bear: ["PER 837배 → 밸류에이션 과부담", "6% 급등 후 단기 차익실현 매물 예상", "원전 수주는 장기 → 단기 실적 반영 제한적"]
+      },
+      scenario: {
+        bull: { price: 125000, pct: "+13.1%", desc: "미국 원전 수주 확정 + 추가 계약" },
+        base: { price: 118000, pct: "+6.8%", desc: "현 추세 유지" },
+        bear: { price: 98000, pct: "-11.3%", desc: "수주 지연 + 글로벌 조정" }
+      },
+      sector: ["원전", "SMR", "에너지"],
+      valid: "1~2주 스윙 (원전 수주 뉴스 모멘텀)",
+      risks: [
+        "PER 837배 — 밸류에이션 부담 매우 높음 ⚠️",
+        "6% 급등 후 단기 조정 가능성",
+        "원전 수주 기대감 선반영 가능성"
+      ]
+    },
+    {
+      rank: "3위",
+      name: "LS ELECTRIC",
+      code: "KRX 010120",
+      price: 188600, change: 0, changePct: 0.00, stars: 4,
+      supply: "액면분할 후 신규 매수세 유입 · 북미 데이터센터 수주 1703억원 확보",
+      signals: { sar: true, vr: false, boll: true, vrValue: "기관 -3589억 (4월 순매도)", sarNote: "외인 소폭 매수 전환", bollNote: "액면분할 후 거래량 3배 급증" },
+      buyRange: "185,000 ~ 190,000원",
+      buyExtra: "182,000원 아래 추가매수 (5일선 지지)",
+      weight: "첫 매수 5% → 추가 5% (최대 10%)",
+      target: 202000, stop: 183000,
+      targetPct: "+7.1%", stopPct: "-3.0%",
+      riskReward: "1 : 2.4",
+      news: [
+        "LS ELECTRIC 액면분할 첫날 +13.7% 급등 — 전력기기 슈퍼사이클 (글로벌이코노믹)",
+        "북미 데이터센터 전력설비 1703억원 수주 확정 (뉴스핌)",
+        "증권가 목표가 26만원 상향 — 전력 인프라 수혜 본격화",
+        "원전+데이터센터 듀얼 모멘텀 — 전력기기 대장주 부상"
+      ],
+      debate: {
+        bull: ["액면분할 후 유동성 확대 → 개인 매수세 유입 가속", "북미 데이터센터 수주 1703억 → 실적 가시성 확보", "전력기기 슈퍼사이클 + 원전 수혜 듀얼 모멘텀"],
+        bear: ["액면분할 후 2일 연속 급등 → 단기 과열 경계", "외인 순매도 3589억 (4월) → 수급 이탈 주의", "단가 19.7만원 → 소자본 비중 조절 어려움"]
+      },
+      scenario: {
+        bull: { price: 215000, pct: "+14.0%", desc: "추가 대형 수주 + 전력 인프라 확대" },
+        base: { price: 202000, pct: "+7.1%", desc: "현 추세 유지" },
+        bear: { price: 170000, pct: "-9.9%", desc: "외인 매도 지속 + 과열 조정" }
+      },
+      sector: ["전력기기", "데이터센터", "원전"],
+      valid: "1~3일 단타 (액면분할 모멘텀 활용)",
+      risks: [
+        "단가 19.7만원 — 소자본 시 비중 조절 필요 ⚠️",
+        "외인 4월 3589억 순매도 — 수급 이탈 경계",
+        "액면분할 모멘텀 소진 후 급락 가능성"
+      ]
+    }
+  ],
+  portfolio: {
+    items: [
+      { name: "HPSP 👑", pct: 50, sector: "반도체 장비" },
+      { name: "두산에너빌리티", pct: 30, sector: "원전/에너지" },
+      { name: "LS ELECTRIC", pct: 20, sector: "전력기기" }
+    ],
+    rules: [
+      "섹터 분산: 반도체(50%) + 원전(30%) + 전력(20%)",
+      "단일 종목 최대 50% (베스트 픽 HPSP)",
+      "원전+전력 합산 50% — 에너지 슈퍼사이클 수혜 분산"
+    ]
+  },
+  trackRecord: {
+    date: "4월 17일",
+    records: [
+      { name: "HPSP", code: "KRX 403870", recPrice: 44900, closePrice: null, dayReturn: "N/A", result: "unknown", targetHit: false, stopHit: false, slot: "아침 베스트" },
+      { name: "두산에너빌리티", code: "KRX 034020", recPrice: 108800, closePrice: null, dayReturn: "N/A", result: "unknown", targetHit: false, stopHit: false, slot: "아침 2위" },
+      { name: "LS ELECTRIC", code: "KRX 010120", recPrice: 188600, closePrice: null, dayReturn: "N/A", result: "unknown", targetHit: false, stopHit: false, slot: "아침 3위" }
+    ],
+    hitRate: null,
+    totalDays: 1,
+    avgReturn: "N/A",
+    insight: "⚠️ KRX + 다음 모두 4/17 종가 조회 실패 (16:16 KST 재시도). KRX(data.krx.co.kr) 메인·개별종목·OpenAPI 모두 403/차단 또는 내부서버 에러 반환. 다음 금융(finance.daum.net·m.finance.daum.net)은 JS 렌더링 기반이라 HTML 프록시로 가격 데이터 추출 불가. 다음 wisefn 경로(wisefn.finance.daum.net)만 응답했으나 'Updated 26.04.16' 즉 4/16 종가만 표시 (HPSP 44,150·두산E 110,800·LS 188,600 — 모두 4/17 아님, 검증값 아님). '종가 추정·드리프트 금지' 원칙에 따라 closePrice: null 유지. 월요일 전략은 realtime 블록의 14:30 장중 시세(HPSP +2.1%·두산 -0.9%·LS -1.4%)만 참고하되 실제 종가와 다를 수 있으므로 사용자가 HTS/MTS에서 직접 확인한 뒤 수동 갱신 필요.",
+    tomorrowWatch: [
+      "SK하이닉스 (000660): 4/23 실적 발표 D-3 · 영업이익 40조 기대감 선반영 · HBM4 본격 양산 모멘텀 — 월요일 시초가 추격 가능",
+      "한미반도체 (042700): HBM 본더 장비 독점 · SK하이닉스 실적 직접 수혜 밸류체인 1티어 · 금요일 외인 순매수 지속 확인 시 관심",
+      "두산에너빌리티 (034020, 재관찰): 손절선(107,000원) 위에서 버팀 · 미국 원전 수주 뉴스플로우 재점화 시 반등 가능 · 105,000원 지지선 주목"
+    ],
+    dataSource: "⚠️ KRX + 다음 교차검증 실패 — KRX data.krx.co.kr 403/에러 · 다음 finance.daum.net JS렌더링으로 가격 추출 불가 · 다음 wisefn은 4/16 종가만 노출 (4/17 데이터 미반영). 수동 종가 확인 필요 (4/17 16:16 KST 재시도 실패)"
+  },
+  // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
+  // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
+  // 이미 추천한 종목(best·top3)과 중복되지 않는 완전히 새로운 종목만 추가합니다.
+  // 매일 아침 07:35 daily-trading-recommendation 실행 시 [] 로 초기화됩니다.
+  intradayPicks: [],
+  // intradayPicks 데이터 예시:
+  // intradayPicks: [
+  //   {
+  //     time: "09:12",                       // 발굴 시각
+  //     slot: "시초가 급등 대장주",            // 시초가 급등 대장주 / 09:15 수급 폭증 대장 / 2부 주도주 / 오후 기관 매수 주도주
+  //     style: "단타",                        // 단타 / 스윙
+  //     name: "...", code: "...",
+  //     price: 0, change: 0, changePct: 0, stars: 5,
+  //     reason: "왜 지금 이 종목인가 — 발굴 근거 1~2줄 요약",
+  //     supply: "...", signals: {...},
+  //     buyRange: "...", buyExtra: "...", weight: "...",
+  //     target: 0, stop: 0, targetPct: "...", stopPct: "...", riskReward: "1 : 2.0",
+  //     news: [...], sector: [...],
+  //     valid: "당일 단타 (15:30 마감 전 정리)",
+  //     risks: [...]
+  //   }
+  // ],
+  // trackRecord 데이터 예시 (15:30 장마감 후 자동 채워짐):
+  // trackRecord: {
+  //   date: "4월 17일",
+  //   records: [
+  //     { name: "HPSP", recPrice: 44900, closePrice: 45200, dayReturn: "+0.67%", result: "hit", targetHit: false, stopHit: false },
+  //     { name: "두산에너빌리티", recPrice: 108800, closePrice: 107500, dayReturn: "-1.19%", result: "miss", targetHit: false, stopHit: false },
+  //   ],
+  //   hitRate: 75,
+  //   totalDays: 1,
+  //   avgReturn: "+0.5%",
+  //   insight: "반도체 섹터 추천 적중률 높음, 원전 섹터는 변동성 주의"
+  // },
+  realtime: {
+    rank: "🏁 14:30 마감 1시간 전 — 금요일 최종 정리 가이드",
+    name: "보유 3종목 포지션 정리 판단 (HPSP·두산E·LS ELECTRIC) — 오버나이트 총 10% 이하 제한",
+    code: "마감 D-1H · 동시호가 D-50min · 금요일 보수 모드",
+    price: 45850,
+    change: 950,
+    changePct: 2.12,
+    stars: 5,
+    supply: "🟢 HPSP +2.1% 익절권 유지 (46,050→45,850 소폭 레벨다운) · 🟡 두산E -0.9% 손절선 위 · 🟡 LS ELECTRIC -1.4% 손절선 위 · 포트 전체 +0.4% — 금요일 마감 주말 리스크↑ 오버나이트 비중 축소 강권 💼",
+    signals: { sar: true, vr: false, boll: false, vrValue: "기관 -210억 순매도 전환 (오후 차익실현)", sarNote: "외인 매수 강도 둔화 (+90억)", bollNote: "오후장 변동성 확대 · 종가 약세 마감 가능성" },
+    buyRange: "신규 매수 금지 — 마감 정리 모드 (금요일)",
+    buyExtra: "🚨 14:30 이후 신규 진입 절대 금지 · 다음 거래일(월요일) 09:00 이후 시황 재확인 후 재진입 판단 · 지금은 포지션 정리 + 동시호가 분할 매도 세팅에 집중",
+    weight: "🟢 이익 종목(HPSP): 60~70% 분할 익절 + 30~40% 오버나이트 / 🟡 손실 종목(두산·LS): 손절선 위면 50% 축소 + 50% 유지 / ⚠️ 오버나이트 총 비중은 전체 자산의 10% 이하로 제한",
+    target: 47500, stop: 43000,
+    targetPct: "+3.6% (목표 근접)", stopPct: "-6.2%",
+    riskReward: "마감 정리 모드",
+    news: [
+      "🟢 HPSP 45,850원 (+2.12%, 추천가 44,900원 대비 +950원) → ⭐ 60% 분할 익절 (45,800원/45,900원 지정가) · 40% 오버나이트 (4/23 SK하이닉스 실적 D-5 모멘텀)",
+      "🟡 두산에너빌리티 107,800원 (-0.92%, 추천가 108,800원 대비 -1,000원) → 손절선(107,000원) 위 · 50% 정리 + 50% 유지 권고 (107,500원 지정가 매도)",
+      "🟡 LS ELECTRIC 185,900원 (-1.43%, 추천가 188,600원 대비 -2,700원) → 손절선(183,000원) 위 · 주말 갭다운 대비 50% 축소 (186,000원 지정가) + 50% 유지",
+      "📊 KOSPI 6,218 (-0.13%) · 코스닥 +0.2% · 프로그램 순매도 전환 · 외인 마감 전 차익실현 출회 · 마감 보합 예상",
+      "⏰ 15:20~15:30 동시호가 — 분할 매도 지정가 주문 미리 세팅 (시장가 금물, 3차례 분할)",
+      "📅 주말 이벤트: 美 실적 시즌 본격화(TSMC·넷플릭스 후속) · 지정학 변수 · FOMC 5월 초 — 금요일 오버나이트 보수 모드"
+    ],
+    debate: {
+      bull: ["HPSP +2.1% 안정 수익 유지 → 60% 익절로 주간 수익 확정 + 40% 오버나이트로 SK하이닉스 실적(4/23) 모멘텀 레버리지", "두산·LS 모두 손절선 위 → 강제 손절 트리거 미발동, 50/50 분할 정리로 리스크 관리 가능", "외인 4월 누적 +5.8조 순매수 지속 → 월요일 하방 경직성 존재, 일부 오버나이트 유지 합리적"],
+      bear: ["⚠️ 금요일 + 주말 이벤트 누적 → 월요일 갭다운 시 손절 연쇄 터질 가능성 (두산·LS 둘 다 손절선 근접)", "14:30 기관 -210억 순매도 전환 · 거래량 감소 → 마감 약세 마감 확률↑ · HPSP 익절 70%로 확대 검토", "KOSPI -0.1% 하락 반전 + 프로그램 순매도 → 오후 장 하방 압력 누적 · 오버나이트 10% 이하 엄수 필수"]
+    },
+    scenario: {
+      bull: { price: 46200, pct: "+2.9%", desc: "마감 강세 반등 — HPSP 46,000원대 회복 · 익절 비중 50%로 축소 가능 (오버나이트 50% 한도 내)" },
+      base: { price: 45850, pct: "+2.1%", desc: "현 박스권 마감 — HPSP 60% 익절 + 40% 오버나이트 · 두산/LS 50% 축소 (기본 계획)" },
+      bear: { price: 44900, pct: "0.0%", desc: "마감 전 차익실현 가속 — HPSP 70~80% 익절 확대 · 두산/LS 70% 축소 · 주말 리스크 회피 최우선" }
+    },
+    sector: ["마감 정리", "동시호가 준비", "오버나이트 최소화"],
+    valid: "14:30~15:30 장마감까지 · 15:20 동시호가 매도 주문 분할 세팅 필수 · 금요일 보수 모드",
+    risks: [
+      "🟢 HPSP: 60% 분할 익절 (45,800원·45,900원 지정가 2차례) · 40% 오버나이트 (4/23 SK하이닉스 실적 D-5 모멘텀) · 급락 시 50%로 상향",
+      "🟡 두산에너빌리티: 손절선(107,000원) 위 → 50% 축소(107,500원 지정가) + 50% 유지 · 107,000원 터치 시 나머지 즉시 손절",
+      "🟡 LS ELECTRIC: 손절선(183,000원) 위 → 50% 축소(186,000원 지정가) + 50% 유지 · 액면분할 과열 + 외인 -3,589억 매도 지속 주의",
+      "⚠️ 주말 갭다운 리스크 — 미국 실적·지정학·FOMC 변수 → 오버나이트 총 비중은 전체 자산의 10% 이하로 엄수",
+      "⏰ 15:20 동시호가 — 시장가 절대 금물, 지정가 3차 분할 매도 (장마감 10분전/5분전/직전)",
+      "💡 월요일 09:00 이후 오버나이트 포지션 평가 — 시초가 +3% 상승 시 익절 우선, -2% 하락 시 손절선 재점검",
+      "📌 기관 -210억 순매도 전환 감지 — 14:50~15:10 수급 모니터링 후 HPSP 익절 비중 70%로 상향 검토"
+    ]
+  }
+};
+
+function renderStars(n) {
+  let s = "";
+  for (let i = 0; i < 5; i++) s += i < n ? "★" : '<span class="off">★</span>';
+  return s;
+}
+
+function renderSignals(sig) {
+  if (!sig) return `<div class="signal-grid"><div class="signal-chip off">신호 데이터 없음</div></div>`;
+  const chips = [
+    { on: !!sig.sar, label: "외인 " + (sig.sar ? "매수 ✓" : "매도 ✗"), note: sig.sarNote || "-" },
+    { on: !!sig.vr, label: "기관 " + (sig.vr ? "매수 ✓" : "매도 ✗"), note: sig.vrValue || "-" },
+    { on: !!sig.boll, label: "거래량 " + (sig.boll ? "급증 ✓" : "보통 ✗"), note: sig.bollNote || "-" },
+  ];
+  return `<div class="signal-grid">${chips.map(c =>
+    `<div class="signal-chip ${c.on ? '' : 'off'}">${c.label}<div style="font-size:10px;opacity:0.8;margin-top:2px">${c.note}</div></div>`
+  ).join("")}</div>`;
+}
+
+function renderPickCard(p, isBest) {
+  try {
+    if (!p) return `<div class="pick-card-wrap"><div class="pick-card"><div style="padding:20px;text-align:center;color:#8890aa">데이터 로딩 중...</div></div></div>`;
+    const price = typeof p.price === 'number' ? p.price : 0;
+    const change = typeof p.change === 'number' ? p.change : 0;
+    const changePct = typeof p.changePct === 'number' ? p.changePct : 0;
+    const stop = typeof p.stop === 'number' ? p.stop : null;
+    const target = typeof p.target === 'number' ? p.target : null;
+    const buyRange = typeof p.buyRange === 'string' ? p.buyRange : String(price);
+    const chgClass = change >= 0 ? "chg-up" : "chg-down";
+    const chgSign = change >= 0 ? "▲" : "▼";
+    const wrapClass = isBest ? "best-pick" : "pick-card";
+    const badge = isBest ? `` : `<div class="pick-rank">#${p.rank || ""}</div>`;
+    const crownHTML = isBest ? `<div style="text-align:center"><div class="best-crown">👑 오늘의 베스트 픽</div></div>` : ``;
+
+    // 매집 중심가 안전 계산
+    let buyCenter = price;
+    try {
+      if (buyRange.includes('~')) {
+        const parts = buyRange.split('~');
+        const lo = parseInt((parts[0] || '').replace(/[^\d]/g,''));
+        const hi = parseInt((parts[1] || '').replace(/[^\d]/g,''));
+        if (!isNaN(lo) && !isNaN(hi)) buyCenter = Math.round((lo + hi) / 2);
+      }
+    } catch(e) { buyCenter = price; }
+
+    // 손절/목표 알림 배너
+    let alertBanner = "";
+    try {
+      if (stop && price > 0 && price <= stop) {
+        alertBanner = `<div style="background:rgba(251,63,94,0.15);border:1px solid rgba(251,63,94,0.4);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center;animation:blink 1s infinite">
+          🚨 <strong>손절선 도달!</strong> 현재가 ${price.toLocaleString()}원 ≤ 손절가 ${stop.toLocaleString()}원 — 즉시 매도 검토</div>`;
+      } else if (stop && price > 0 && price <= stop * 1.02) {
+        alertBanner = `<div style="background:rgba(251,191,36,0.12);border:1px solid rgba(251,191,36,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
+          ⚠️ <strong>손절선 근접!</strong> 현재가 ${price.toLocaleString()}원 → 손절가 ${stop.toLocaleString()}원까지 ${((price - stop) / price * 100).toFixed(1)}% 남음</div>`;
+      } else if (target && price > 0 && price >= target) {
+        alertBanner = `<div style="background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);border-radius:10px;padding:10px 14px;margin:8px 0;text-align:center">
+          🎯 <strong>목표가 도달!</strong> 현재가 ${price.toLocaleString()}원 ≥ 목표가 ${target.toLocaleString()}원 — 익절 검토</div>`;
+      }
+    } catch(e) { alertBanner = ""; }
+
+    // 뉴스 안전 렌더링
+    const newsHTML = Array.isArray(p.news) ? p.news.map(n => `<div class="news-item">${n || ""}</div>`).join("") : `<div class="news-item">뉴스 데이터 없음</div>`;
+
+    // 섹터 안전 렌더링
+    const sectorHTML = Array.isArray(p.sector) ? p.sector.map(s => `<span class="mini-tag">#${s || ""}</span>`).join("") : `<span class="mini-tag">#-</span>`;
+
+    // 리스크 안전 렌더링
+    const risksHTML = Array.isArray(p.risks) ? p.risks.map(r => `<div class="pick-row-value" style="font-size:12.5px;margin-top:4px;color:#fb7185">• ${r || ""}</div>`).join("") : `<div class="pick-row-value" style="font-size:12.5px;margin-top:4px;color:#fb7185">• 리스크 정보 없음</div>`;
+
+    // 찬반 토론 안전 렌더링
+    let debateHTML = "";
+    try {
+      if (p.debate && typeof p.debate === 'object') {
+        const bullArr = Array.isArray(p.debate.bull) ? p.debate.bull : [];
+        const bearArr = Array.isArray(p.debate.bear) ? p.debate.bear : [];
+        debateHTML = `<div class="pick-row">
+          <div class="pick-row-label">⚔️ 찬반 토론 (AI 멀티 분석)</div>
+          <div class="debate">
+            <div class="debate-col bull"><div class="debate-label bull-label">✅ 매수 이유 (Bull)</div>${bullArr.map(b => `<div class="debate-point">${b || ""}</div>`).join("")}</div>
+            <div class="debate-col bear"><div class="debate-label bear-label">❌ 매도 이유 (Bear)</div>${bearArr.map(b => `<div class="debate-point">${b || ""}</div>`).join("")}</div>
+          </div></div>`;
+      }
+    } catch(e) { debateHTML = ""; }
+
+    // 시나리오 안전 렌더링
+    let scenarioHTML = "";
+    try {
+      if (p.scenario && typeof p.scenario === 'object') {
+        const bull = p.scenario.bull || {};
+        const base = p.scenario.base || {};
+        const bear = p.scenario.bear || {};
+        scenarioHTML = `<div class="pick-row">
+          <div class="pick-row-label">📊 시나리오 목표가 (강세/기본/약세)</div>
+          <div class="scenario-grid">
+            <div class="scenario-box bull-sc"><div class="scenario-label">🟢 강세</div><div class="scenario-price">${typeof bull.price === 'number' ? bull.price.toLocaleString() : '-'}</div><div class="scenario-pct">${bull.pct || '-'}</div><div class="scenario-desc">${bull.desc || '-'}</div></div>
+            <div class="scenario-box base-sc"><div class="scenario-label">⚪ 기본</div><div class="scenario-price">${typeof base.price === 'number' ? base.price.toLocaleString() : '-'}</div><div class="scenario-pct">${base.pct || '-'}</div><div class="scenario-desc">${base.desc || '-'}</div></div>
+            <div class="scenario-box bear-sc"><div class="scenario-label">🔴 약세</div><div class="scenario-price">${typeof bear.price === 'number' ? bear.price.toLocaleString() : '-'}</div><div class="scenario-pct">${bear.pct || '-'}</div><div class="scenario-desc">${bear.desc || '-'}</div></div>
+          </div></div>`;
+      }
+    } catch(e) { scenarioHTML = ""; }
+
+    return `<div class="pick-card-wrap">${badge}<div class="${wrapClass}">
+    ${crownHTML}
+    <div class="pick-top">
+      <div>
+        <div class="pick-name">${p.name || "종목명 없음"}</div>
+        <div class="pick-code">${p.code || ""}</div>
+        <div class="pick-stars">${renderStars(p.stars || 0)}</div>
+      </div>
+      <div class="pick-price">
+        <div class="pick-price-num">${price.toLocaleString()}</div>
+        <div class="pick-price-chg ${chgClass}">${chgSign} ${Math.abs(change).toLocaleString()} (${changePct > 0 ? '+' : ''}${changePct}%)</div>
+      </div>
+    </div>
+    ${alertBanner}
+
+    <div class="pick-row">
+      <div class="pick-row-label">📊 수급 상태</div>
+      <div class="pick-row-value pick-row-strong">${p.supply || "수급 정보 없음"}</div>
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">🎯 수급 신호 (외인·기관·거래량)</div>
+      ${renderSignals(p.signals)}
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">💰 매수 구간 + 비중 전략</div>
+      <div class="pick-row-value"><span class="pick-row-green">${buyRange}</span></div>
+      <div class="pick-row-value" style="font-size:12px;color:#8890aa;margin-top:3px">${p.buyExtra || ""}</div>
+      <div class="pick-row-value" style="font-size:12px;color:#a78bfa;margin-top:3px">⚖️ ${p.weight || "비중 정보 없음"}</div>
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">📈 목표가 / 손절가 / 손익비</div>
+      <div class="price-grid">
+        <div class="price-box pb-buy">
+          <div class="price-box-label">매집 중심</div>
+          <div class="price-box-val">${buyCenter.toLocaleString()}</div>
+          <div class="price-box-pct">기준가</div>
+        </div>
+        <div class="price-box pb-target">
+          <div class="price-box-label">🎯 목표가</div>
+          <div class="price-box-val">${target ? target.toLocaleString() : '-'}</div>
+          <div class="price-box-pct">${p.targetPct || '-'}</div>
+        </div>
+        <div class="price-box pb-stop">
+          <div class="price-box-label">🛑 손절가</div>
+          <div class="price-box-val">${stop ? stop.toLocaleString() : '-'}</div>
+          <div class="price-box-pct">${p.stopPct || '-'}</div>
+        </div>
+      </div>
+      <div class="pick-row-value" style="text-align:center;margin-top:8px;font-size:12px">손익비 <span class="pick-row-yellow">${p.riskReward || '-'}</span></div>
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">📰 뉴스 헤드라인 (추천 근거)</div>
+      ${newsHTML}
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">🏭 섹터 · 테마</div>
+      <div class="tag-row">${sectorHTML}</div>
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">⏰ 유효 기간</div>
+      <div class="tag-row"><span class="mini-tag time">${p.valid || "미정"}</span></div>
+    </div>
+
+    <div class="pick-row">
+      <div class="pick-row-label">⚠️ 리스크 요인</div>
+      ${risksHTML}
+    </div>
+
+    ${debateHTML}
+    ${scenarioHTML}
+  </div></div>`;
+  } catch(e) {
+    return `<div class="pick-card-wrap"><div class="pick-card"><div style="padding:20px;text-align:center;color:#fb7185">⚠️ 카드 렌더링 오류: ${e.message || "알 수 없는 오류"}<br><small>데이터가 예상과 다른 형식입니다</small></div></div></div>`;
+  }
+}
+
+function renderMacro(m) {
+  try {
+    if (!m || typeof m !== 'object') return "";
+    return `<div class="section open" style="margin-bottom:14px">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="section-icon" style="background:rgba(96,165,250,0.15)">🌍</div>
+      <div class="section-title-wrap">
+        <div class="section-time">4/16 장마감 기준</div>
+        <div class="section-title">글로벌 매크로 요약</div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">
+      <div class="pick-row"><div class="pick-row-label">📢 핵심 이슈</div><div class="pick-row-value pick-row-yellow">${m.headline || "-"}</div></div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px">
+        <div class="pick-row"><div class="pick-row-label">😰 VIX</div><div class="pick-row-value pick-row-green">${m.vix || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🔥 SOX</div><div class="pick-row-value pick-row-yellow">${m.sox || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">📈 나스닥</div><div class="pick-row-value pick-row-green">${m.nasdaq || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🟢 엔비디아</div><div class="pick-row-value pick-row-green">${m.nvidia || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🛢️ Brent</div><div class="pick-row-value">${m.brent || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">🛢️ WTI</div><div class="pick-row-value">${m.wti || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">💱 원/달러</div><div class="pick-row-value pick-row-green">${m.usdkrw || "-"}</div></div>
+        <div class="pick-row"><div class="pick-row-label">📊 코스피</div><div class="pick-row-value pick-row-green">${m.kospi || "-"}</div></div>
+      </div>
+    </div>
+  </div>`;
+  } catch(e) { return ""; }
+}
+
+function renderTrackRecord(tr) {
+  try {
+    if (!tr || typeof tr !== 'object') return `<div class="track-section">
+      <div class="track-header"><div class="track-title">📊 AI 적중률 분석</div></div>
+      <div class="track-empty">장마감(15:30) 후 자동으로 분석됩니다<br>추천 종목 vs 종가 비교 · 적중률 · 개선점 분석</div>
+    </div>`;
+
+    const records = Array.isArray(tr.records) ? tr.records : [];
+    const hitCount = records.filter(r => r && r.result === "hit").length;
+    const totalCount = records.length;
+    const hitRate = typeof tr.hitRate === 'number' ? tr.hitRate : 0;
+    const rateClass = hitRate >= 70 ? "good" : hitRate >= 50 ? "warn" : "bad";
+    const avgReturn = tr.avgReturn || "0%";
+
+    return `<div class="track-section">
+      <div class="track-header">
+        <div class="track-title">📊 AI 적중률 분석</div>
+        <div class="track-date">${tr.date || ""} 기준</div>
+      </div>
+      <div class="track-summary">
+        <div class="track-stat"><div class="track-stat-val ${rateClass}">${hitRate}%</div><div class="track-stat-label">적중률</div></div>
+        <div class="track-stat"><div class="track-stat-val" style="color:#60a5fa">${hitCount}/${totalCount}</div><div class="track-stat-label">적중/전체</div></div>
+        <div class="track-stat"><div class="track-stat-val ${parseFloat(avgReturn) >= 0 ? 'good' : 'bad'}">${avgReturn}</div><div class="track-stat-label">평균 수익률</div></div>
+        ${tr.totalDays ? `<div class="track-stat"><div class="track-stat-val" style="color:#a78bfa">${tr.totalDays}일</div><div class="track-stat-label">누적 분석</div></div>` : ""}
+      </div>
+      ${records.map(r => { try { return `<div class="track-row">
+        <div class="track-name">${(r && r.name) || "?"}</div>
+        <div class="track-prices">추천 ${r && typeof r.recPrice === 'number' ? r.recPrice.toLocaleString() : '-'} → 종가 ${r && typeof r.closePrice === 'number' ? r.closePrice.toLocaleString() : '-'} (${(r && r.dayReturn) || '-'})</div>
+        <div class="track-result ${(r && r.result) || ''}">${r && r.result === "hit" ? "✅ 적중" : r && r.result === "miss" ? "❌ 미스" : "➖ 보합"}</div>
+      </div>`; } catch(e) { return ""; } }).join("")}
+      ${tr.insight ? `<div class="track-insight">💡 <strong>AI 인사이트:</strong> ${tr.insight}</div>` : ""}
+      ${Array.isArray(tr.tomorrowWatch) && tr.tomorrowWatch.length ? `<div class="track-insight" style="margin-top:10px;border-left:3px solid #fbbf24">🔭 <strong>내일 관심종목:</strong><br>${tr.tomorrowWatch.map(w => `• ${w || ""}`).join("<br>")}</div>` : ""}
+    </div>`;
+  } catch(e) {
+    return `<div class="track-section"><div style="padding:15px;text-align:center;color:#fb7185">적중률 데이터 로딩 오류</div></div>`;
+  }
+}
+
+function renderIntradayPick(p) {
+  try {
+    if (!p) return "";
+    const price = typeof p.price === 'number' ? p.price : 0;
+    const change = typeof p.change === 'number' ? p.change : 0;
+    const changePct = typeof p.changePct === 'number' ? p.changePct : 0;
+    const chgClass = change >= 0 ? "chg-up" : "chg-down";
+    const chgSign = change >= 0 ? "▲" : "▼";
+    const isSwing = (p.style || "").includes("스윙");
+    const buyRange = p.buyRange || (price ? price.toLocaleString() + "원" : "-");
+    const target = typeof p.target === 'number' ? p.target.toLocaleString() : "-";
+    const stop = typeof p.stop === 'number' ? p.stop.toLocaleString() : "-";
+    const reason = p.reason || (Array.isArray(p.news) ? (p.news[0] || "") : "");
+    const newsHTML = Array.isArray(p.news) && p.news.length ? p.news.map(n => `<div class="news-item">${n || ""}</div>`).join("") : "";
+    const sectorHTML = Array.isArray(p.sector) ? p.sector.map(s => `<span class="mini-tag">#${s || ""}</span>`).join("") : "";
+
+    return `<div class="intraday-card ${isSwing ? 'style-swing' : ''}">
+      <div class="intraday-meta">
+        <span class="intraday-time">⏰ ${p.time || "-"}</span>
+        <span class="intraday-slot">${p.slot || "신규 발굴"}</span>
+        <span class="intraday-style ${isSwing ? 'swing' : ''}">${p.style || "단타"}</span>
+        <span style="font-size:11px;color:#fbbf24">${renderStars(p.stars || 0)}</span>
+      </div>
+      <div class="intraday-name-row">
+        <div><span class="intraday-name">${p.name || "종목명 없음"}</span><span class="intraday-code">${p.code || ""}</span></div>
+        <div class="intraday-price">${price.toLocaleString()}원 <span class="${chgClass}" style="font-size:12px;margin-left:4px">${chgSign}${Math.abs(change).toLocaleString()} (${changePct > 0 ? '+' : ''}${changePct}%)</span></div>
+      </div>
+      ${reason ? `<div class="intraday-reason">💡 ${reason}</div>` : ""}
+      <div class="intraday-grid">
+        <div class="intraday-kv"><div class="intraday-kv-label">💰 매수</div><div class="intraday-kv-val intraday-kv-buy">${buyRange}</div></div>
+        <div class="intraday-kv"><div class="intraday-kv-label">🎯 목표</div><div class="intraday-kv-val intraday-kv-target">${target} <span style="font-size:10px;opacity:0.8">${p.targetPct || ''}</span></div></div>
+        <div class="intraday-kv"><div class="intraday-kv-label">🛑 손절</div><div class="intraday-kv-val intraday-kv-stop">${stop} <span style="font-size:10px;opacity:0.8">${p.stopPct || ''}</span></div></div>
+      </div>
+      ${p.supply ? `<div style="font-size:12px;color:#b8bccc;margin-top:8px;line-height:1.5">📊 ${p.supply}</div>` : ""}
+      ${newsHTML ? `<div style="margin-top:8px">${newsHTML}</div>` : ""}
+      ${sectorHTML ? `<div class="tag-row" style="margin-top:6px">${sectorHTML}</div>` : ""}
+      <div class="intraday-bottom">
+        <span>⏰ ${p.valid || "당일 단타"}</span>
+        <span class="intraday-rr">R:R ${p.riskReward || '-'}</span>
+      </div>
+    </div>`;
+  } catch(e) {
+    return `<div class="intraday-card"><div style="padding:12px;text-align:center;color:#fb7185">⚠️ 카드 오류</div></div>`;
+  }
+}
+
+function renderIntradaySection(picks) {
+  const arr = Array.isArray(picks) ? picks : [];
+  const count = arr.length;
+  const helpText = "장중 예약 작업(09:12·09:24·10:34·14:07)이 <strong>실시간 수급·거래량을 스캔해</strong> 아침 추천 이외의 <strong>완전히 새로운 대장주</strong>를 발굴해 이 자리에 쌓아갑니다. 아침 TOP3 가격 갱신이 아닙니다.";
+  const body = count === 0
+    ? `<div class="intraday-empty">🔎 장 시작 후 예약 스캔에서 신규 대장주가 포착되면 여기에 쌓입니다<br>09:12 시초가 · 09:24 수급 · 10:34 2부 주도주 · 14:07 오후 기관 매수</div>`
+    : arr.map(renderIntradayPick).join("");
+  return `<div class="intraday-section">
+    <div class="intraday-header">
+      <div class="intraday-title">🔥 장중 신규 발굴 주도주</div>
+      <span class="intraday-count">${count}종목 누적</span>
+    </div>
+    <div class="intraday-help">${helpText}</div>
+    ${body}
+  </div>`;
+}
+
+function renderPickPage() {
+  try {
+    if (!pickData || typeof pickData !== 'object') return `<div style="padding:40px;text-align:center;color:#fb7185">⚠️ 데이터를 불러올 수 없습니다</div>`;
+
+    // top3 안전 처리
+    const top3 = Array.isArray(pickData.top3) ? pickData.top3 : [];
+
+    // 포트폴리오 안전 렌더링
+    let portfolioHTML = "";
+    try {
+      if (pickData.portfolio && typeof pickData.portfolio === 'object') {
+        const items = Array.isArray(pickData.portfolio.items) ? pickData.portfolio.items : [];
+        const rules = Array.isArray(pickData.portfolio.rules) ? pickData.portfolio.rules : [];
+        portfolioHTML = `<div class="portfolio-section">
+          <div class="portfolio-title">📦 포트폴리오 비중 배분</div>
+          <div class="portfolio-bars">
+            ${items.map(it => `<div class="portfolio-bar" style="width:${(it && it.pct) || 0}%">${(it && it.pct) || 0}%</div>`).join("")}
+          </div>
+          <div class="portfolio-legend">
+            ${items.map(it => `<div class="portfolio-item">
+              <div class="portfolio-item-name">${(it && it.name) || "-"}</div>
+              <div class="portfolio-item-pct">${(it && it.pct) || 0}%</div>
+              <div class="portfolio-item-sector">${(it && it.sector) || "-"}</div>
+            </div>`).join("")}
+          </div>
+          <div class="portfolio-rule">${rules.map(r => "• " + (r || "")).join("<br>")}</div>
+        </div>`;
+      }
+    } catch(e) { portfolioHTML = ""; }
+
+    return `<div class="pick-header">
+      <div class="pick-header-date">💎 ${pickData.date || ""}</div>
+      <div class="pick-header-updated">${pickData.updated || ""}</div>
+    </div>
+    ${pickData.macro ? renderMacro(pickData.macro) : ""}
+    <div style="background:rgba(244,63,94,0.08);border:1px solid rgba(244,63,94,0.25);border-radius:12px;padding:12px 14px;margin-bottom:16px;font-size:12px;color:#fb7185;text-align:center;line-height:1.6">
+      ⚠️ <strong>투자 참고용</strong> · AI 분석은 참고 자료이며 투자 판단의 최종 책임은 본인에게 있습니다<br>반드시 본인의 원칙(진입 3종 확인 · 손절 -3%)을 지켜주세요
+    </div>
+    <div class="divider-label">🌅 아침 추천 (자동 업데이트)</div>
+    ${renderPickCard(pickData.best, true)}
+    ${top3.map(p => renderPickCard(p, false)).join("")}
+
+    ${portfolioHTML}
+
+    <div class="divider-label">🔥 장중 신규 발굴 (시간대별 누적)</div>
+    ${renderIntradaySection(pickData.intradayPicks)}
+
+    <div class="divider-label">🔧 기존 포지션 관리 (아침 TOP3 체크)</div>
+    <div class="realtime-section">
+      <div class="realtime-header">
+        <div class="realtime-title">🔧 포지션 관리 체크</div>
+        <div class="realtime-time" id="rt-time">${pickData.realtimeLabel || "업데이트 대기 중"}</div>
+      </div>
+      ${pickData.realtime ? renderPickCard(pickData.realtime, false) : `
+      <div class="realtime-empty">
+        11:30·14:30 예약 작업이 아침 TOP3의<br>
+        <strong>눌림목·익절·손절 타이밍</strong>을 체크해 여기에 표시합니다<br>
+        📱 페이지 새로고침(당겨서)만 하면 최신 데이터!
+      </div>`}
+    </div>
+
+    <div class="divider-label">📊 적중률 분석 (자동)</div>
+    ${renderTrackRecord(pickData.trackRecord)}`;
+  } catch(e) {
+    return `<div style="padding:40px;text-align:center;color:#fb7185">⚠️ 페이지 렌더링 오류: ${e.message || "알 수 없는 오류"}<br><small>페이지를 새로고침해 주세요</small></div>`;
+  }
+}
+
+// ===== DATA =====
+const routineData = [
+  {
+    icon: "🌙", iconBg: "rgba(167, 139, 250, 0.15)",
+    time: "전날 밤", title: "밤 루틴", open: true,
+    items: [
+      { badge: "필수", title: "FT", desc: "유가·이란·거시 환경 파일" },
+      { badge: "필수", title: "연합인포맥스", desc: "속보 + 수치 데이터 파일" },
+      { badge: "필수", title: "인포스탁", desc: "테마 등락률 + 내일 일정 파일" },
+      { badge: "필수", title: "GoInsider 90점+", desc: "내일 재료 종목 발굴 (90점 이상만)" },
+      { badge: "선택", title: "국내 뉴스", desc: "장 마감 후 공시·계약·눈에 띄는 뉴스 텍스트 복붙" },
+      { badge: "필수", title: "야간선물 종가", desc: "+1% 이상 → 갭업 / -1% 이상 → 갭다운 예상" },
+      { badge: "필수", title: "Brent + WTI", desc: "유가 종가 수치 함께 확인" },
+    ]
+  },
+  {
+    icon: "🌅", iconBg: "rgba(251, 191, 36, 0.15)",
+    time: "07:30", title: "아침 07:30", open: false,
+    items: [
+      { badge: "필수", title: "SOX 등락률", desc: "필라델피아 반도체지수" },
+      { badge: "필수", title: "엔비디아 등락률", desc: "HPSP 등 반도체 소부장 직결" },
+      { badge: "필수", title: "나스닥 등락률", desc: "전체 방향 확인" },
+      { badge: "필수", title: "VIX", desc: "20 이하: 안정 / 25 이상: 주의 / 30 이상: 위험" },
+      { badge: "필수", title: "Brent + WTI 종가", desc: "에너지 섹터 방향 결정" },
+      { badge: "필수", title: "원달러 환율", desc: "1,480 이하: 외인 우호 / 1,500 이상: 외인 부담" },
+      { badge: "필수", title: "야간선물 최종 종가", desc: "코스피 내일 방향 선행지표" },
+      { badge: "이벤트", title: "실적 발표 결과", desc: "마이크론·엔비디아 등 이벤트 있는 날만 — EPS + 매출 + 가이던스 챙기기" },
+      { badge: "이벤트", title: "FOMC 결과", desc: "3·6·9·12월만 — 동결/인상/인하 + 파월 발언 톤 + 점도표 변화" },
+      { badge: "선택", title: "GoInsider 공시", desc: "전날 밤 못 챙겼으면 90점+ 필터링" },
+      { badge: "좋음", title: "수급순위 캡처", desc: "나무 HTS → 강도 정렬 화면 / 어제 외인+기관 강한 종목 파악" },
+    ]
+  },
+  {
+    icon: "🎯", iconBg: "rgba(244, 63, 94, 0.15)",
+    time: "09:00 직전", title: "09:00 직전 (종목 확정)", open: false,
+    items: [
+      { badge: "필수", title: "일봉 캡처 1장", desc: "선정 종목 전체 추세 + 지지·저항 파악" },
+      { badge: "필수", title: "5일 일봉 텍스트", desc: "볼린저·SAR·VR·K·D·Williams 포함" },
+      { badge: "필수", title: "호가창 캡처 1장", desc: "매수/매도 잔량 비율 + 벽 유무 확인" },
+    ]
+  },
+  {
+    icon: "⚡", iconBg: "rgba(251, 191, 36, 0.15)",
+    time: "09:00~09:15", title: "09:00~09:15 (진입 판단)", open: false,
+    items: [
+      { badge: "필수", title: "1분봉 텍스트", desc: "1분마다 전송 (시초가 + 이후 3~4줄) · 시가·고가·저가·종가 + 볼린저·SAR·VR·K·D·Williams" },
+      { badge: "필수", title: "1분봉 수급 첫 줄", desc: "시간 / 주가 / 외인(A) / 기관(B) / 합계 / 대량체결" },
+      { badge: "좋음", title: "체결강도", desc: "130 이상: 강함 / 70 이하: 약함" },
+    ]
+  },
+  {
+    icon: "📊", iconBg: "rgba(52, 211, 153, 0.15)",
+    time: "09:15 이후", title: "09:15 이후 (홀딩 판단)", open: false,
+    items: [
+      { badge: "필수", title: "3분봉 텍스트", desc: "3분마다 전송 (최근 3~5줄)" },
+      { badge: "필수", title: "3분봉 수급 최신 1줄", desc: "외인·기관 방향 지속 여부 확인" },
+      { badge: "이상", title: "이상 신호 시 캡처", desc: "SAR 전환 / 외인·기관 급변 / 거래량 폭발" },
+    ]
+  },
+];
+
+const indicatorData = [
+  {
+    icon: "⚙️", iconBg: "rgba(167, 139, 250, 0.15)",
+    title: "나무증권 지표 세팅", open: true,
+    items: [
+      { badge: "(20, 2)", badgeType: "num", title: "Bollinger Bands", desc: "중심선 위 = 상승 추세 / 이탈 = 손절 고려" },
+      { badge: "(0.02, 0.2)", badgeType: "num", title: "Parabolic SAR", desc: "점 아래 = 상승 / 점 위 = 하락 / 손절선 역할" },
+      { badge: "(25)", badgeType: "num", title: "Volume Ratio", desc: "150↑ 강함 / 70↓ 약함" },
+      { badge: "(5, 3)", badgeType: "num", title: "Stochastic Fast", desc: "80↑ 과매수 / 20↓ 과매도 / 골든·데드크로스" },
+      { badge: "(10, 5) ← 변경", badgeType: "num", title: "Williams %R", desc: "-20↑ 과매수 / -80↓ 과매도 / 3분봉만 신뢰" },
+    ]
+  },
+  {
+    icon: "🔔", iconBg: "rgba(251, 146, 60, 0.15)",
+    title: "차트 신호 세팅", open: false,
+    items: [
+      { badge: "매매", title: "BollingerBand 신호", desc: "밴드 이탈·복귀 자동 표시" },
+      { badge: "매매", title: "Parabolic 신호", desc: "SAR 전환점 자동 표시" },
+      { badge: "골든", title: "StochasticFast 신호", desc: "K선 D선 교차 자동 표시" },
+      { badge: "매매", title: "WilliamsR 신호", desc: "과매수·과매도 자동 표시" },
+      { badge: "자동", title: "거래량 급등", desc: "급등 초입 포착용" },
+      { badge: "매수", title: "신고가 신호", desc: "52주 신고가 돌파 자동 표시" },
+      { badge: "자동", title: "가격급등/급락", desc: "단기 급변동 자동 알림" },
+    ]
+  },
+  {
+    icon: "🕯️", iconBg: "rgba(167, 139, 250, 0.15)",
+    title: "봉 단위", open: false,
+    items: [
+      { badge: "3분봉", badgeType: "3분", title: "평소 메인", desc: "노이즈 적음 / 지표 신뢰도 높음" },
+      { badge: "1분봉", badgeType: "1분", title: "시초가 구간", desc: "09:00~09:15 / 방향 빠르게 파악" },
+      { badge: "1분봉으로 전환", badgeType: "전환", title: "진입 직전", desc: "정확한 타이밍 포착" },
+      { badge: "진입 전날 밤", badgeType: "진입", title: "일봉", desc: "전체 추세·지지·저항 파악용" },
+    ]
+  },
+];
+
+const ruleData = [
+  {
+    icon: "✅", iconBg: "rgba(52, 211, 153, 0.15)",
+    title: "진입 원칙", dot: "dot-green", open: true,
+    items: [
+      "재료(뉴스·공시) 확인 후 진입",
+      "수급(외인+기관) 확인 필수",
+      "1종목 집중 — 동시 2종목 금지",
+      "투입 최대 70% (700만원 기준)",
+      "시초가 바로 추격 금지 — 반드시 눌림 확인",
+      "SAR 신호 + VR 150+ + 수급 셋 다 확인 후 진입",
+    ]
+  },
+  {
+    icon: "🔴", iconBg: "rgba(244, 63, 94, 0.15)",
+    title: "손절 원칙", dot: "dot-red", open: false,
+    items: [
+      "손절 -3% 절대 원칙 (21만원 기준)",
+      "Parabolic SAR 이탈 시 즉시 손절",
+      "볼린저 중심선 이탈 = 손절 고려",
+      "손절한 종목 당일 재매수 절대 금지",
+      "같은 종목 반복 손실 패턴 경계",
+    ]
+  },
+  {
+    icon: "💰", iconBg: "rgba(251, 191, 36, 0.15)",
+    title: "익절 원칙", dot: "dot-yellow", open: false,
+    items: [
+      "목표가 +5~7% 설정 후 지정가 미리 걸기",
+      "1차 목표가 도달 전 익절 금지",
+      "Stochastic K 100 + Williams 0 + 볼린저 상단 이탈 = 익절 신호",
+      "장 마감 전 반드시 정리 (오버나이트 리스크)",
+      "파업·악재 뉴스 확인 즉시 매도",
+    ]
+  },
+  {
+    icon: "🚫", iconBg: "rgba(167, 139, 250, 0.15)",
+    title: "금지 사항", dot: "dot-purple", open: false,
+    items: [
+      "재료 없는 종목 진입 금지",
+      "동시 2종목 이상 금지",
+      "손절선 무시하고 버티기 금지",
+      "손절 후 같은 종목 당일 재매수 금지",
+      "시초가 갭업 +10% 이상 즉시 추격 금지",
+      "기분·감에 의한 매매 금지",
+    ]
+  },
+];
+
+const knowledgeData = [
+  {
+    icon: "💧", iconBg: "rgba(52, 211, 153, 0.15)",
+    title: "수급 판단 기준", dot: "dot-green", open: true,
+    items: [
+      "외인+기관 동시 매수 = 가장 강한 신호",
+      "외인만 매수 = 단기 강하나 지속성 확인 필요",
+      "기관만 매수 = 안정적 상승 가능",
+      "대량체결 마이너스 = 상단에서 기관 이탈 경고",
+      "수급 강도(시초대비): 50 이상 + 대량체결 플러스 = 진입 검토",
+    ]
+  },
+  {
+    icon: "📐", iconBg: "rgba(167, 139, 250, 0.15)",
+    title: "지표 해석 원칙", dot: "dot-purple", open: false,
+    items: [
+      "Stochastic + Williams 과매수 무시 조건: 신고가 돌파 종목 / 강한 재료 + 외인기관 폭발 / 볼린저 상단 타고 오르는 추세",
+      "위 조건에서는 수급 + SAR + VR 150+ 세 가지 먼저 확인",
+      "SAR 이탈 = 추세 전환 가장 명확한 신호",
+      "VR 354 이상 = 거래량 과열 (단기 되돌림 가능)",
+      "볼린저 밴드 스퀴즈 = 곧 큰 움직임 예고 (방향 모름)",
+    ]
+  },
+  {
+    icon: "⏰", iconBg: "rgba(251, 146, 60, 0.15)",
+    title: "시장 시간대", dot: "dot-orange", open: false,
+    items: [
+      "08:00~08:30 넥장: 삼성전자·하이닉스 등 대형주만 / 거래량 얇아 소량만",
+      "09:00~09:30: 하루 거래량 20~30% 집중 / 가장 중요한 구간",
+      "09:30~10:30: 1차 급등 후 눌림목 / 재진입 타이밍",
+      "10:30~11:30: 거래량 감소 / 단타 애매한 구간",
+      "11:30~13:00: 점심 / 거래량 최저점 / 포지션 정리",
+      "13:00~14:30: 기관 오후 매매 시작 / 2차 진입 가능",
+      "14:30~15:30: 마감 포지션 정리 / 급등주 차익실현 주의",
+    ]
+  },
+  {
+    icon: "🛢️", iconBg: "rgba(244, 63, 94, 0.15)",
+    title: "유가 & 거시 변수", dot: "dot-red", open: false,
+    items: [
+      "Brent + WTI 항상 함께 확인 (Brent = 글로벌 기준 / WTI = 미국 기준)",
+      "유가 상승 → 에너지주 강세 (S-Oil·SK이노) / 반도체 약세",
+      "유가 하락 → 반도체·성장주 강세",
+      "원달러 1,500 돌파 → 외인 매도 압력 / 진입 보수적으로",
+      "VIX 25 이상 → 시장 불안 / 공격적 진입 자제",
+      "SOX 등락 → 국내 반도체 소부장 다음날 직결",
+    ]
+  },
+  {
+    icon: "⭐", iconBg: "rgba(251, 191, 36, 0.15)",
+    title: "종목 선정 기준 (★별점)", dot: "dot-purple", open: false,
+    items: [
+      "★★★★★: 재료 + 수급 + 차트 전부 완벽 (신고가·외인 폭발·강한 재료)",
+      "★★★★☆: 재료·수급 강하나 차트 애매 / 진입 타이밍 잡으면 OK",
+      "★★★☆☆: 한 가지 이상 부족 / 확인 후 진입",
+      "★★☆☆☆: 재료 약하거나 수급 불안 / 보류 권고",
+      "★☆☆☆☆: 진입 금지 수준",
+      "추천 시 항상 별점 + 이유 함께 표시",
+    ]
+  },
+];
+
+// ===== RENDER =====
+function renderItemSection(s, idxPrefix) {
+  const items = s.items.map((it, i) => {
+    const badgeClass = it.badgeType ? ("b-" + it.badgeType) : ("b-" + it.badge);
+    return `<div class="item" data-check="${idxPrefix}-${i}">
+      <span class="badge ${badgeClass}">${it.badge}</span>
+      <div class="item-body">
+        <div class="item-title">${it.title}</div>
+        <div class="item-desc">${it.desc}</div>
+      </div>
+    </div>`;
+  }).join("");
+  const count = s.items.filter(x => x.badge === "필수").length;
+  const countLabel = count > 0 ? `<span class="section-count">${count}개 필수</span>` : "";
+  return `<div class="section ${s.open ? 'open' : ''}">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="section-icon" style="background:${s.iconBg}">${s.icon}</div>
+      <div class="section-title-wrap">
+        ${s.time ? `<div class="section-time">${s.time}</div>` : ""}
+        <div class="section-title">${s.title}</div>
+      </div>
+      ${countLabel}
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">${items}</div>
+  </div>`;
+}
+
+function renderBulletSection(s, idxPrefix) {
+  const items = s.items.map((text, i) =>
+    `<div class="bullet-item ${s.dot}" data-check="${idxPrefix}-${i}">
+      <div class="bullet-text">${text}</div>
+    </div>`
+  ).join("");
+  return `<div class="section ${s.open ? 'open' : ''}">
+    <div class="section-header" onclick="this.parentElement.classList.toggle('open')">
+      <div class="section-icon" style="background:${s.iconBg}">${s.icon}</div>
+      <div class="section-title-wrap">
+        <div class="section-title">${s.title}</div>
+      </div>
+      <span class="chevron">▼</span>
+    </div>
+    <div class="section-body">${items}</div>
+  </div>`;
+}
+
+const coreHTML = `<div class="core">
+  <div class="core-title">💡 핵심 원칙</div>
+  <div class="core-line">재료 확인 → 수급 확인 → SAR + VR150+ 확인 → 진입</div>
+  <div class="core-line">손절 -3% 절대 원칙 · 손절 종목 당일 재매수 금지</div>
+  <div class="core-line" style="color:#a78bfa;margin-top:6px">오늘 하루 잘 하는 것보다 매일 꾸준히 하는 것이 중요합니다</div>
+</div>`;
+
+document.getElementById("page-pick").innerHTML = renderPickPage();
+document.getElementById("page-routine").innerHTML =
+  routineData.map((s, i) => renderItemSection(s, "r"+i)).join("") + coreHTML;
+document.getElementById("page-indicator").innerHTML =
+  indicatorData.map((s, i) => renderItemSection(s, "i"+i)).join("") + coreHTML;
+document.getElementById("page-rule").innerHTML =
+  ruleData.map((s, i) => renderBulletSection(s, "ru"+i)).join("") + coreHTML;
+document.getElementById("page-knowledge").innerHTML =
+  knowledgeData.map((s, i) => renderBulletSection(s, "k"+i)).join("") + coreHTML;
+
+// ===== TABS =====
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById("page-" + tab.dataset.page).classList.add("active");
+    updateProgress();
+    const isPick = tab.dataset.page === "pick";
+    document.querySelector(".progress").style.display = isPick ? "none" : "flex";
+    document.querySelector(".reset-btn").style.display = isPick ? "none" : "block";
+  });
+});
+// hide progress on initial pick view
+document.querySelector(".progress").style.display = "none";
+document.querySelector(".reset-btn").style.display = "none";
+
+// ===== CHECK (in-memory) =====
+const checked = {};
+document.body.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-check]");
+  if (!el) return;
+  const id = el.dataset.check;
+  checked[id] = !checked[id];
+  el.classList.toggle("checked", checked[id]);
+  updateProgress();
+});
+
+function updateProgress() {
+  const activePage = document.querySelector(".page.active");
+  if (!activePage) return;
+  const all = activePage.querySelectorAll("[data-check]");
+  const done = activePage.querySelectorAll("[data-check].checked");
+  const total = all.length;
+  const d = done.length;
+  const pct = total ? (d / total) * 100 : 0;
+  document.getElementById("pfill").style.width = pct + "%";
+  document.getElementById("ptext").textContent = d + " / " + total;
+}
+
+function resetChecks() {
+  Object.keys(checked).forEach(k => delete checked[k]);
+  document.querySelectorAll("[data-check]").forEach(el => el.classList.remove("checked"));
+  updateProgress();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
