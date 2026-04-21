@@ -549,9 +549,9 @@
 // ===== 오늘의 추천 샘플 데이터 =====
 const pickData = {
   date: "2026년 4월 21일 (화) 추천",
-  updated: "4월 21일 07:35 아침 분석 — Claude 자동 분석 (백지 재선정 · 어제 2종목 교체)",
+  updated: "4월 21일 15:30 장마감 분석 — Claude 자동 분석",
   macro: {
-    asOf: "4/20 전일 미증시 마감 기준",
+    asOf: "4/21 한국장 마감 기준",
     vix: "⏳ 로딩 중",
     sox: "⏳ 로딩 중",
     nasdaq: "⏳ 로딩 중",
@@ -560,7 +560,7 @@ const pickData = {
     usdkrw: "⏳ 로딩 중",
     kospi: "⏳ 로딩 중",
     kosdaq: "⏳ 로딩 중",
-    headline: "📊 전일 미증시 하락 (나스닥 -0.26% · 13일 연승 중단) · 유가 급등 (Brent +6.5% $96.25 / WTI +6.4% $87.88) · 美-이란 휴전 4/23(수) 만료 D-2 임박 · VIX 17.48 소강 국면 유지"
+    headline: "📊 4/21 코스피 +0.44% 6,219 마감 (4월 MTD +22.6% 글로벌 최고) · 반도체·2차전지·조선 대형주 주도 (SK하이닉스 +5.19% · LG에너지솔루션 +11.31% · HD현대중공업 +10.11%) · WTI 90달러 미만 유가 프리미엄 소멸 · 美-이란 휴전 4/23(수) 만료 D-2 대기"
   },
   best: {
     rank: "베스트 픽",
@@ -692,13 +692,23 @@ const pickData = {
   },
   trackRecord: {
     date: "4월 21일",
-    records: [],
+    records: [
+      { name: "S-OIL", code: "010950", recPrice: 115900, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "best" },
+      { name: "LIG넥스원", code: "079550", recPrice: 921000, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" },
+      { name: "현대로템", code: "064350", recPrice: 217500, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" }
+    ],
     hitRate: null,
     totalDays: 3,
     avgReturn: null,
-    insight: "장마감(15:30) 후 분석 예정",
-    tomorrowWatch: [],
-    dataSource: "15:30 대기 중"
+    insight: "오늘(4/21) 코스피 +0.44% 6,219 마감. 반도체·2차전지·조선 대형주 주도(SK하이닉스 +5.19% · LG에너지솔루션 +11.31% · HD현대중공업 +10.11%)한 반면 아침 추천 3종목(정유·방산)은 섹터 역풍 — WTI 90달러 미만 유가 프리미엄 축소 + 방산주 차익실현. 웹검색으로 3종목 정확 종가 확인 불가로 적중률 산출 보류(확인 필요). 내일 4/23 D-Day 휴전 만료 임박, 실적시즌 본격화 국면 대비.",
+    tomorrowWatch: [
+      "LG에너지솔루션(373220) - 오늘 +11.31% 급등 마감, 2차전지 섹터 주도 흐름 연장 기대 + 1Q26 실적 시즌 본격화",
+      "HD현대중공업(329180) - 오늘 +10.11% 급등 마감, 조선주 대형주→중소형주 밸류체인 확산 초입 구간",
+      "현대자동차(005380) - 오늘 +3.61% 상승 마감, 4월 20일까지 수출 +49.4% YoY 서프라이즈 + 1Q 실적 발표 D-1 임박",
+      "SK스퀘어(402340) - 오늘 +2.43% 상승 마감, 반도체 대형주 순환 매수 흐름 수혜 + SK하이닉스 지분 보유 레버리지",
+      "한화에어로스페이스(012450) - K-방산 대장주, 4/23 美-이란 휴전 만료 D-2 이벤트 드리븐 — 결렬 시 방공 수요 최대 수혜"
+    ],
+    dataSource: "WebSearch 4/21 코스피 마감 시황(newspim·valley.town·DS투자증권 4/20 데일리) — 종목별 종가는 정확 체결가 확인 실패로 확인 필요 처리"
   },
   // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
   // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
@@ -735,23 +745,34 @@ const pickData = {
   //   insight: "반도체 섹터 추천 적중률 높음, 원전 섹터는 변동성 주의"
   // },
   realtime: {
-    rank: "🌅 장 시작 전 — 아침 준비",
-    name: "장 시작 대기",
-    code: "09:00 개장까지 대기 · 매크로 체크 중",
+    rank: "📊 15:30 장마감 — 당일 적중률 확인 필요 (3종목 종가 미확정)",
+    name: "4/21 장마감 분석 요약",
+    code: "추천 3종목 정확 종가 미확인 — 내일 07:35 새 종목 발굴 예정",
     price: 0, change: 0, changePct: 0, stars: 0,
-    supply: "실시간 수급 데이터 접근 불가 — 15:30 장마감 기준만 제공",
-    signals: { sar: false, vr: false, boll: false, vrValue: "-", sarNote: "-", bollNote: "-" },
-    buyRange: "09:00 개장 후 시초가 확인",
-    buyExtra: "—",
-    weight: "아침 best/top3 참고",
+    supply: "오늘 코스피 +0.44% 6,219 마감(4월 MTD +22.6%). 반도체·2차전지·조선 대형주 주도(SK하이닉스 +5.19% · LG에너지솔루션 +11.31% · HD현대중공업 +10.11%) — 아침 추천 정유·방산 섹터는 유가 90달러 미만 + 휴전 협상 분위기로 상대적 약세 가능성. 3종목 정확 종가는 WebSearch 확인 실패(확인 필요).",
+    signals: { sar: false, vr: false, boll: false, vrValue: "장마감 종가 확인 실패", sarNote: "WebSearch 4/21 정확 체결가 확정 불가", bollNote: "내일 07:35 새 종목 발굴 시점에 재평가" },
+    buyRange: "장 종료 — 내일 07:35 아침 분석 대기",
+    buyExtra: "오늘 3종목 모두 종가 확인 실패로 손익 판정 보류. 추정 금지 원칙 준수.",
+    weight: "내일 아침 07:35 daily-trading-recommendation 기준 재평가",
     target: 0, stop: 0, targetPct: "-", stopPct: "-",
-    riskReward: "-",
-    news: ["매크로 요약은 상단 글로벌 매크로 섹션 참조"],
+    riskReward: "장마감 — 실제 포지션 정산 필요 시 사용자 직접 확인",
+    news: [
+      "S-OIL(010950): 종가 확인 필요 — 아침 추천가 115,900원 · 손절 110,000원 · 목표 126,000원. 오늘 WTI 90달러 미만 + 유가 상방 베팅 의지 제한 → 유가 프리미엄 축소 환경",
+      "LIG넥스원(079550): 종가 확인 필요 — 아침 추천가 921,000원 · 손절 870,000원 · 목표 990,000원. 방산 섹터는 4/23 D-Day 휴전 이벤트 대기, 오늘 뚜렷한 대형주 주도주 명단 미진입",
+      "현대로템(064350): 종가 확인 필요 — 아침 추천가 217,500원 · 손절 205,500원 · 목표 235,000원. 조선은 HD현대중공업 +10.11% 급등, 방산/전차 섹터는 상대적 정체",
+      "🌅 내일 07:35 새 종목 발굴 예정 — 내일 관심 섹터 후보: 2차전지(LG에너지솔루션 +11.31%) · 조선(HD현대중공업 +10.11%) · 자동차(현대차 +3.61% · 4월 수출 +49.4% YoY) · K-방산(한화에어로 4/23 D-Day 이벤트)",
+      "시점 메모 — 2026-04-21(화) 15:30 KST 장마감. intradayPicks 비어있음(장중 발굴 일시정지 중). 4/23 수요일 美-이란 휴전 만료 = 시장 공통 분수령."
+    ],
     debate: { bull: [], bear: [] },
     scenario: { bull: {price:0,pct:"-",desc:"-"}, base: {price:0,pct:"-",desc:"-"}, bear: {price:0,pct:"-",desc:"-"} },
-    sector: ["장 시작 대기"],
-    valid: "09:00 개장 후 갱신",
-    risks: ["장 시작 전 · 장중 신규 발굴은 중단 중(2주 검증 대기)"]
+    sector: ["정유", "방산", "조선", "2차전지", "반도체"],
+    valid: "내일 07:35 갱신 예정",
+    risks: [
+      "3종목 정확 종가 확인 실패 — 적중률 산출 보류 (사용자 직접 확인 권장)",
+      "4/23 美-이란 휴전 결과 = 전 섹터 공통 분수령 (결렬 시 방산·정유 반등 / 타결 시 재차 조정)",
+      "4월 MTD +22.6% 글로벌 최고 수익률 — 단기 과열 조정 리스크 상존",
+      "실시간 체결가·수급 데이터 API 미접근 — WebSearch만으로 장마감 정확 종가 확정 불가"
+    ]
   }
 };
 
@@ -1459,118 +1480,4 @@ async function _loadSheetMacro() {
 async function _loadUsdKrw() {
   try {
     const res = await fetch("https://api.frankfurter.app/latest?from=USD&to=KRW");
-    if (!res.ok) return null;
-    const d = await res.json();
-    return d && d.rates && d.rates.KRW ? d.rates.KRW : null;
-  } catch(e) {
-    console.warn("환율 API 실패:", e);
-    return null;
-  }
-}
-
-async function refreshMacroFromSheet() {
-  const [sheet, krw] = await Promise.all([_loadSheetMacro(), _loadUsdKrw()]);
-  if (!pickData || !pickData.macro) return;
-  const m = pickData.macro;
-
-  if (sheet) {
-    const setField = (field, key, prefix, suffix) => {
-      const s = sheet[key];
-      if (!s || s.val === null) { m[field] = "⚠️ 조회 실패"; return; }
-      m[field] = `${prefix || ""}${_fmtNum(s.val)}${suffix || ""}${_fmtPct(s.chg)}`;
-    };
-    setField("vix", "VIX");
-    setField("sox", "SOXX", "", " (SOXX ETF)");
-    setField("nasdaq", "나스닥");
-    setField("nvidia", "엔비디아", "$");
-    setField("wti", "USO_WTI", "$", " (USO ETF)");
-    setField("brent", "BNO_Brent", "$", " (BNO ETF)");
-    setField("kospi", "KOSPI");
-    const k150 = sheet["KOSDAQ150_ETF"];
-    if (k150 && k150.chg !== null) {
-      const sign = k150.chg >= 0 ? "+" : "";
-      m.kosdaq = `${sign}${k150.chg.toFixed(2)}% (KOSDAQ150 ETF)`;
-    } else {
-      m.kosdaq = "⚠️ 조회 실패";
-    }
-  } else {
-    ["vix","sox","nasdaq","nvidia","wti","brent","kospi","kosdaq"].forEach(f => m[f] = "⚠️ 시트 로딩 실패");
-  }
-
-  if (krw) {
-    m.usdkrw = _fmtNum(krw) + "원";
-  } else {
-    m.usdkrw = "⚠️ 환율 조회 실패";
-  }
-
-  const now = new Date();
-  const ts = now.toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'});
-  m.asOf = "🌐 실시간 자동 갱신 · " + ts;
-
-  const cont = document.getElementById("macro-container");
-  if (cont) cont.innerHTML = renderMacro(m);
-}
-
-// 페이지 렌더 직후 실행
-refreshMacroFromSheet();
-
-document.getElementById("page-routine").innerHTML =
-  routineData.map((s, i) => renderItemSection(s, "r"+i)).join("") + coreHTML;
-document.getElementById("page-indicator").innerHTML =
-  indicatorData.map((s, i) => renderItemSection(s, "i"+i)).join("") + coreHTML;
-document.getElementById("page-rule").innerHTML =
-  ruleData.map((s, i) => renderBulletSection(s, "ru"+i)).join("") + coreHTML;
-document.getElementById("page-knowledge").innerHTML =
-  knowledgeData.map((s, i) => renderBulletSection(s, "k"+i)).join("") + coreHTML;
-
-// ===== TABS =====
-document.querySelectorAll(".tab").forEach(tab => {
-  tab.addEventListener("click", () => {
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-    tab.classList.add("active");
-    document.getElementById("page-" + tab.dataset.page).classList.add("active");
-    updateProgress();
-    const isPick = tab.dataset.page === "pick";
-    document.querySelector(".progress").style.display = isPick ? "none" : "flex";
-    document.querySelector(".reset-btn").style.display = isPick ? "none" : "block";
-  });
-});
-// hide progress on initial pick view
-document.querySelector(".progress").style.display = "none";
-document.querySelector(".reset-btn").style.display = "none";
-
-// ===== CHECK (in-memory) =====
-const checked = {};
-document.body.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-check]");
-  if (!el) return;
-  const id = el.dataset.check;
-  checked[id] = !checked[id];
-  el.classList.toggle("checked", checked[id]);
-  updateProgress();
-});
-
-function updateProgress() {
-  const activePage = document.querySelector(".page.active");
-  if (!activePage) return;
-  const all = activePage.querySelectorAll("[data-check]");
-  const done = activePage.querySelectorAll("[data-check].checked");
-  const total = all.length;
-  const d = done.length;
-  const pct = total ? (d / total) * 100 : 0;
-  document.getElementById("pfill").style.width = pct + "%";
-  document.getElementById("ptext").textContent = d + " / " + total;
-}
-
-function resetChecks() {
-  Object.keys(checked).forEach(k => delete checked[k]);
-  document.querySelectorAll("[data-check]").forEach(el => el.classList.remove("checked"));
-  updateProgress();
-}
-
-updateProgress();
-</script>
-</body>
-</html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+    if
