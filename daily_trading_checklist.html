@@ -548,10 +548,10 @@
 <script>
 // ===== 오늘의 추천 샘플 데이터 =====
 const pickData = {
-  date: "2026년 4월 21일 (화) 추천",
-  updated: "4월 21일 15:30 장마감 분석 — Claude 자동 분석",
+  date: "2026년 4월 22일 (수) 추천",
+  updated: "4월 22일 07:35 아침 분석 — Claude 자동 분석",
   macro: {
-    asOf: "4/21 한국장 마감 기준",
+    asOf: "4/21 전일 미증시 마감 기준",
     vix: "⏳ 로딩 중",
     sox: "⏳ 로딩 중",
     nasdaq: "⏳ 로딩 중",
@@ -560,155 +560,187 @@ const pickData = {
     usdkrw: "⏳ 로딩 중",
     kospi: "⏳ 로딩 중",
     kosdaq: "⏳ 로딩 중",
-    headline: "📊 4/21 코스피 +0.44% 6,219 마감 (4월 MTD +22.6% 글로벌 최고) · 반도체·2차전지·조선 대형주 주도 (SK하이닉스 +5.19% · LG에너지솔루션 +11.31% · HD현대중공업 +10.11%) · WTI 90달러 미만 유가 프리미엄 소멸 · 美-이란 휴전 4/23(수) 만료 D-2 대기"
+    headline: "📊 4/21 코스피 +2.72% 6,388 사상 최고치 경신 (반도체+2.8조 외인 순매수) · 美증시 S&P -0.63% 나스닥 -0.59% VIX 18.87(+7.95%) 이란 휴전 연장 불확실 · Brent $98.48 재상승 후 후퇴 (Trump 휴전 연장 발언) · SK하이닉스 실적 4/23(목) D-1 + 4월 수출 +49.4% YoY 역대 최대"
   },
   best: {
     rank: "베스트 픽",
-    name: "S-OIL",
-    code: "KRX 010950",
-    price: 115900,
+    name: "LG에너지솔루션",
+    code: "KRX 373220",
+    price: 466000,
     change: 0,
     changePct: 0,
     stars: 5,
-    supply: "🛢️ 전일 국제유가 급등(Brent +6.5% $96.25 · WTI +6.4% $87.88) — 호르무즈 봉쇄 지속 + 美-이란 휴전 4/23 만료 D-2 최대 수혜 🚨",
-    signals: { sar: true, vr: true, boll: true, vrValue: "어제(4/20) -1.19% 저평가 마감, 오늘 유가 급등 반영 기대", sarNote: "증권사 3곳(한화·삼성·NH) 목표가 15만원 컨센서스 · 1Q26 실적 서프라이즈 임박", bollNote: "어제 종가 115,900원 · 12만원 저항 재도전 구간" },
-    buyRange: "115,000 ~ 118,000원",
-    buyExtra: "113,000원 아래 추가매수 (20일선 지지 확인)",
+    supply: "🔋 4/21 +11.31% 급등 마감 466,000원 — 벤츠 LFP 배터리 공급 공식화 뉴스 + 2차전지 레버리지 ETF 섹터 1위 (TIGER 2차전지TOP10레버리지 +25.00%)",
+    signals: { sar: true, vr: true, boll: true, vrValue: "4/21 외인 +1.33조 · 기관 +7,371억 코스피 동반 순매수 · 반도체 외 업종 +1.2조 수급 확산", sarNote: "벤츠 LFP 공급 공식화 · 2차전지 업황 턴어라운드 본격화", bollNote: "2차전지 ETF 수익률 1위(+25.00%) — 테마 대장 재진입 구간" },
+    buyRange: "460,000 ~ 475,000원",
+    buyExtra: "455,000원 아래 추가매수 (5일선 지지 확인)",
     weight: "첫 매수 5% → 추가 5%씩 (최대 15%)",
-    target: 126000, stop: 110000,
-    targetPct: "+8.7%", stopPct: "-5.1%",
-    riskReward: "1 : 1.7",
+    target: 505000, stop: 442000,
+    targetPct: "+8.4%", stopPct: "-5.2%",
+    riskReward: "1 : 1.6",
     news: [
-      "전일 국제유가 Brent +6.5% $96.25 · WTI +6.4% $87.88 급등 — 美-이란 4/23 휴전 만료 D-2 불확실성 증폭 (CNBC 4/20)",
-      "호르무즈 통항 선박 급감 지속 — 세계 원유 1/5 통과 구간 봉쇄 장기화",
-      "한화투자증권 S-Oil 목표가 15만원 상향 — 종전 후에도 고마진 기조 지속 (이데일리 4/17)",
-      "삼성증권 1Q26 preview — 공급 타이트 서프라이즈 전망, 목표가 15만원",
-      "NH투자증권 2026년부터 실적·재무구조 개선 본격화 — 목표가 15만원 유지"
+      "4/21 LG에너지솔루션 +11.31% 급등 마감 466,000원 — 벤츠 LFP 배터리 공급 공식화 (이투데이)",
+      "4/21 코스피 +2.72% 6,388 사상 최고치 경신 · 외인+기관 쌍끌이 매수 (뉴스핌 4/21)",
+      "TIGER 2차전지TOP10레버리지 ETF +25.00% 섹터 수익률 1위 — 2차전지 테마 재부상 (뉴스핌 ETF 시황)",
+      "4월 1-20일 한국 수출 +49.4% YoY 역대 최대 504억 달러 · 반도체 수출 +182.5% AI 붐 가속 (파이낸셜뉴스)",
+      "한국판 에코프로 재부상 가능성 — 2차전지 섹터 턴어라운드 시그널 확산 (인포스탁)"
     ],
     debate: {
-      bull: ["유가 +6.5% 최대 수혜 · 호르무즈 봉쇄 직격 정유 마진 확대", "증권사 3곳 목표가 15만원 컨센서스 수렴 (현재 115,900원 대비 +29% 여지)", "1Q26 실적 서프라이즈 임박 + 2026년 모든 사업부 개선"],
-      bear: ["4/23 휴전 타결 시 유가 프리미엄 즉시 소멸 · 어제 -1.19% 차익실현 경험", "국내 유가 정책 변수 (최고가격제 리스크)", "화학 부문 업황 피크아웃 우려 상존"]
+      bull: ["벤츠 LFP 공급 공식화 = 장기 수주 확정 모멘텀", "2차전지 ETF 레버리지 +25% 섹터 독보적 1위 = 수급 테마 재진입", "외인+기관 1Q26 코스피 쌍끌이 매수 · 반도체 외 업종 수급 확산"],
+      bear: ["4/21 +11.31% 급등 직후 단기 과열 · 4/22 차익실현 매물 가능", "2차전지 업황 회복 초입 — 실적 확인 전 테마 변동성 주의", "미증시 4/21 -0.63% 부진 · VIX 18.87 반등으로 위험자산 조정 가능"]
     },
     scenario: {
-      bull: { price: 132000, pct: "+13.9%", desc: "4/23 휴전 결렬 + 유가 $100 돌파 + 정제마진 역대 경신" },
-      base: { price: 126000, pct: "+8.7%", desc: "목표가 15만원 단계적 도달 + 1Q 서프라이즈 반영" },
-      bear: { price: 110000, pct: "-5.1%", desc: "4/23 휴전 타결 + 유가 재하락 + 차익실현" }
+      bull: { price: 520000, pct: "+11.6%", desc: "벤츠 공식 계약 공시 + 2차전지 레버리지 ETF 섹터 매수세 지속 + 외인 추가 유입" },
+      base: { price: 505000, pct: "+8.4%", desc: "2차전지 테마 연장 + 기관 수급 유지 + 1Q26 실적 기대" },
+      bear: { price: 442000, pct: "-5.2%", desc: "단기 과열 차익실현 + 미증시 조정 파급 + 2차전지 테마 되돌림" }
     },
-    sector: ["정유", "호르무즈 수혜", "고마진"],
-    valid: "2~3주 스윙 (1Q26 실적 + 4/23 휴전 이벤트 드리븐)",
+    sector: ["2차전지", "EV 배터리", "벤츠 공급"],
+    valid: "2~3주 스윙 (벤츠 공식 계약 공시 + 1Q26 실적 발표 이벤트 드리븐)",
     risks: [
-      "4/23 美-이란 휴전 타결 시 유가 프리미엄 축소 ⚠️",
-      "어제 -1.19% 미스 — 오전 반짝 강세 후 오후 차익실현 패턴 재발 주의",
-      "국내 유가 정책(최고가격제) 리스크",
-      "화학 부문 업황 피크아웃 우려 상존"
+      "4/21 +11.31% 단기 급등 · 4/22 시초가 차익실현 매물 경계 ⚠️",
+      "미증시 4/21 3대 지수 -0.59~-0.63% 부진 — 위험자산 조정 파급 리스크",
+      "2차전지 업황 회복 시그널이나 실적 확인 전 테마 변동성 상존",
+      "벤츠 공급 규모·마진 구체적 공시 전까지는 기대감 선반영 구간"
     ]
   },
   top3: [
     {
       rank: "2위",
-      name: "LIG넥스원",
-      code: "KRX 079550",
-      price: 921000, change: 0, changePct: 0, stars: 5,
-      supply: "🛡️ 유도무기(대공미사일) 수요 폭증 — 美-이란 4/23 휴전 만료 D-2 + 중동 방공 수요 직격 수혜",
-      signals: { sar: true, vr: true, boll: true, vrValue: "4월 현재 921,000원 — 3월초 신고가 조정 후 횡보 재진입 구간", sarNote: "유럽·중동 방공 미사일 수출 확대 모멘텀 · UAE 350억달러 방산 MOU 직접 수혜 포함", bollNote: "한화에어로(142만원) 대비 개인 진입 부담 낮음 · 대형 방산주 차선두" },
-      buyRange: "905,000 ~ 930,000원",
-      buyExtra: "880,000원 아래 추가매수 (5일선 지지 확인)",
+      name: "한미반도체",
+      code: "KRX 042700",
+      price: 283500, change: 0, changePct: 0, stars: 5,
+      supply: "🔥 HBM4 TC본더 글로벌 독점 공급사 — SK하이닉스 실적 4/23(목) D-1 이벤트 드리븐 · 4/21 코스피 반도체 섹터 외인 +2.8조 순매수 (4/14 종가 기준 283,500원 · 4/21 정확 체결가 조사 중)",
+      signals: { sar: true, vr: true, boll: true, vrValue: "4/21 코스피 반도체 +2.8조 외인 순매수 · HBM TC본더 수주 상반기 본격 인식", sarNote: "SK하이닉스 1Q26 실적 4/23 발표 D-1 · HBM 업황 가이던스 수혜 예상", bollNote: "올해 170,000원(1/2) → 283,500원(4/14) +66% 상승 · 정배열 단기 강세 지속" },
+      buyRange: "280,000 ~ 290,000원",
+      buyExtra: "275,000원 아래 추가매수 (20일선 지지 확인)",
       weight: "첫 매수 5% → 추가 5%씩 (최대 15%)",
-      target: 990000, stop: 870000,
-      targetPct: "+7.5%", stopPct: "-5.5%",
-      riskReward: "1 : 1.4",
+      target: 308000, stop: 268000,
+      targetPct: "+8.6%", stopPct: "-5.5%",
+      riskReward: "1 : 1.6",
       news: [
-        "美-이란 휴전 4/23(수) 만료 D-2 — 결렬 시 방공 미사일 수요 폭증 (CNBC 4/20)",
-        "美 이란 전쟁에 방공 미사일 수요 몰려 — K-방산 주 급등 (다음 뉴스)",
-        "LIG넥스원 2026년 유도무기 수출 확대 및 실적 성장 기대 (딱지닷컴)",
-        "중동 지정학 리스크 심화 + 주요국 국방비 증액 — K-방산 글로벌 수주 본격화",
-        "한국·UAE 350억달러 방산 협력 MOU — LIG넥스원 직접 수혜 포함"
+        "SK하이닉스 1Q26 실적 4/23(목) 오후 3시 발표 D-1 · HBM 가이던스 상향 기대 (아는자산 캘린더)",
+        "한미반도체 HBM4 TC본더 글로벌 유일 독점 공급 — 2026 상반기 수주 본격 인식 (디일렉)",
+        "4월 1-20일 반도체 수출 +182.5% YoY 역대 최대 · AI 붐 가속 (파이낸셜뉴스)",
+        "4/21 코스피 반도체 섹터 외인 +2.8조 순매수 · 사상 최고치 견인 (뉴스핌)",
+        "한미반도체 2026년 1월 170,000원 → 4월 283,500원 +66% 상승 · HBM TC본더 수주 가속 (브로크담)"
       ],
       debate: {
-        bull: ["4/23 휴전 만료 D-2 최대 이벤트 드리븐 — 결렬 시 방공 미사일 단기 폭등", "유도무기 수출 글로벌 확대 — 유럽·중동 동시 수주", "한화에어로(142만원) 대비 단가 부담 낮음 · 대형 방산주 차선두"],
-        bear: ["4/23 휴전 타결 시 방산 프리미엄 즉시 축소", "3월초 신고가 조정 후 횡보 — 추가 상승 동력 확인 필요", "실적 대비 밸류에이션 부담 지속"]
+        bull: ["SK하이닉스 실적 4/23 D-1 이벤트 드리븐 — HBM 가이던스 상향 시 직접 수혜", "HBM4 TC본더 글로벌 독점 = 장기 실적 가시성 확보", "4월 반도체 수출 +182.5% + 코스피 반도체 +2.8조 외인 매수 슈퍼 사이클"],
+        bear: ["SK하이닉스 실적 컨센서스 미달 시 HBM 장비주 동반 조정 리스크", "연초 대비 +66% 급등 — 단기 고평가 논란 상존", "HBM TC본더 경쟁(한화세미텍 등) — 독점 지위 약화 우려"]
       },
       scenario: {
-        bull: { price: 1020000, pct: "+10.7%", desc: "4/23 휴전 결렬 + 방공 수요 폭증 + 유럽 신규 수주" },
-        base: { price: 990000, pct: "+7.5%", desc: "중동 긴장 지속 + 외인 방산 분산 매수" },
-        bear: { price: 870000, pct: "-5.5%", desc: "4/23 휴전 타결 + 방산 프리미엄 차익실현" }
+        bull: { price: 320000, pct: "+12.9%", desc: "SK하이닉스 실적 서프라이즈 + HBM 가이던스 상향 + TC본더 추가 수주 공시" },
+        base: { price: 308000, pct: "+8.6%", desc: "SK하이닉스 실적 컨센 부합 + HBM 업황 지속 반영" },
+        bear: { price: 268000, pct: "-5.5%", desc: "SK하이닉스 실적 부진 + 단기 차익실현 + 반도체 단기 조정" }
       },
-      sector: ["방산", "유도무기", "K-방산 빅4"],
-      valid: "3~5거래일 이벤트 스윙 (4/23 휴전 결과 확인까지)",
+      sector: ["반도체 장비", "HBM", "SK하이닉스 밸류체인"],
+      valid: "3~5거래일 이벤트 스윙 (4/23 SK하이닉스 실적 확인까지)",
       risks: [
-        "4/23 美-이란 휴전 타결 시 갭다운 리스크 ⚠️",
-        "3월초 신고가 대비 조정 구간 — 돌파 실패 시 횡보 지속 가능",
-        "고평가 논란 지속 — 실적 확인 전 차익실현 매물 주의"
+        "4/23 SK하이닉스 실적 컨센서스 미달 시 갭다운 리스크 ⚠️",
+        "연초 대비 +66% 단기 과열 · HBM TC본더 경쟁 심화 우려",
+        "미증시 VIX +7.95% 반등 · 위험자산 단기 조정 파급 가능",
+        "4/21 정확 체결가 조사 중 — 시초가 변동폭 확인 필요"
       ]
     },
     {
       rank: "3위",
-      name: "현대로템",
-      code: "KRX 064350",
-      price: 217500, change: 0, changePct: 0, stars: 4,
-      supply: "🛡️ 루마니아 14조원 전차·장갑차 사업 2026년 상반기 내 결정 — K2 흑표 폴란드 2차 이어 유럽 확장 모멘텀",
-      signals: { sar: true, vr: true, boll: false, vrValue: "현재가 217,500원 · 루마니아 14조 결정 임박으로 실적 가시성 확대", sarNote: "루마니아 H1 2026 결정 · 전차+철도 복합 수주 협상 중", bollNote: "한화에어로·LIG넥스원 동반 강세 시 방산 섹터 회전 매수 수혜" },
-      buyRange: "215,000 ~ 220,000원",
-      buyExtra: "210,000원 아래 추가매수 (5일선 지지 확인)",
+      name: "HD현대중공업",
+      code: "KRX 329180",
+      price: 568000, change: 0, changePct: 0, stars: 4,
+      supply: "🚢 4/21 +10.11% 급등 마감 · 조선 대형주 주도 · 외인+기관 수급 확산 (반도체 외 업종 +1.2조 순매수) · 4/21 정확 체결가 조사 중",
+      signals: { sar: true, vr: true, boll: true, vrValue: "4/21 코스피 반도체 외 업종 외인 +1.2조 순매수 · 조선·건설로 수급 확산", sarNote: "HD현대중공업 4/21 +10.11% 급등 — 조선 섹터 대장주 역할", bollNote: "4/21 사상 최고치 6,388 경신 — 조선 테마 추가 연장 기대 구간" },
+      buyRange: "560,000 ~ 580,000원",
+      buyExtra: "540,000원 아래 추가매수 (5일선 지지 확인)",
       weight: "첫 매수 5% → 추가 5%씩 (최대 15%)",
-      target: 235000, stop: 205500,
-      targetPct: "+8.0%", stopPct: "-5.5%",
-      riskReward: "1 : 1.5",
+      target: 615000, stop: 538000,
+      targetPct: "+8.3%", stopPct: "-5.3%",
+      riskReward: "1 : 1.6",
       news: [
-        "현대로템, 루마니아 전차·장갑차 사업(14조원) H1 2026 내 결정 — 철도 패키지 복합 수주 (헤럴드경제)",
-        "美-이란 휴전 4/23(수) 만료 D-2 — 중동 전차·장갑차 수요 재부각",
-        "K-방산 대기업 KADEX 2026 총출동 — 글로벌 수주 확대 모멘텀",
-        "2026년 K-방산 유럽·중동 대규모 수주 본격화 전망"
+        "4/21 HD현대중공업 +10.11% 급등 마감 — 조선 대형주 주도 · 중소형 조선주 밸류체인 확산 초입 (뉴스핌)",
+        "4/21 코스피 +2.72% 6,388 사상 최고 · 반도체·2차전지·조선으로 상승 동력 확산 (뉴스핌)",
+        "4/21 외인+기관 반도체 외 업종 +1.2조 순매수 · 수급 저변 확대 (뉴스핌)",
+        "LNG선·암모니아선 친환경 선박 수주 사이클 지속 + 美 해군 MRO 시장 진출 모멘텀",
+        "조선 업황 수퍼사이클 2026~2028년 고점 전망 — 대형 3사 수주 잔고 역대 최대권"
       ],
       debate: {
-        bull: ["루마니아 14조 H1 2026 결정 임박 — 유럽 수주 확장 모멘텀", "4/23 휴전 결렬 시 중동 전차 수요 재부각", "한화에어로(142만원)·LIG넥스원(92만원) 대비 단가 217,500원 — 개인 접근성 우수"],
-        bear: ["루마니아 수주 지연·축소 시 모멘텀 공백", "휴전 타결 시 방산 섹터 전반 차익실현 압력", "철도·방산 복합 사업 — 방산 단일 테마 대비 순수 수혜도 희석"]
+        bull: ["4/21 +10.11% 단일 종목 시세 주도 · 조선 대장주 재확인", "코스피 신고가 경신 = 조선·중공업 추가 상승 여력", "LNG/친환경 선박 수주 + 美 해군 MRO 진출 장기 모멘텀"],
+        bear: ["4/21 +10.11% 단일일 급등 후 4/22 시초가 차익실현 가능성", "EB 발행 등 자금 조달 이벤트 리스크 과거 경험", "미증시 조정 파급 + 환율 변동 시 수주 실적 영향"]
       },
       scenario: {
-        bull: { price: 239000, pct: "+9.9%", desc: "루마니아 수주 확정 + 4/23 휴전 결렬 + 유럽 전차 수주 확대" },
-        base: { price: 235000, pct: "+8.0%", desc: "방산 섹터 회전 매수 + 루마니아 진전 공시" },
-        bear: { price: 205500, pct: "-5.5%", desc: "4/23 휴전 타결 + 수주 지연 + 차익실현" }
+        bull: { price: 635000, pct: "+11.8%", desc: "조선 수퍼사이클 + 美 해군 MRO 신규 계약 + 외인 순매수 연장" },
+        base: { price: 615000, pct: "+8.3%", desc: "조선 섹터 테마 연장 + 수주 공시 정상 흐름" },
+        bear: { price: 538000, pct: "-5.3%", desc: "단일일 급등 차익실현 + 미증시 조정 파급 + 환율 변동" }
       },
-      sector: ["방산", "전차·장갑차", "K-방산 빅4"],
-      valid: "2~4주 스윙 (루마니아 H1 2026 결정 + 4/23 휴전 이벤트 드리븐)",
+      sector: ["조선", "친환경 선박", "美 해군 MRO"],
+      valid: "2~3주 스윙 (조선 수퍼사이클 + 1Q26 실적 시즌)",
       risks: [
-        "4/23 美-이란 휴전 타결 시 방산 프리미엄 축소 ⚠️",
-        "루마니아 수주 지연·축소 시 모멘텀 공백 리스크",
-        "철도·방산 복합 기업 — 순수 방산주 대비 리레이팅 지연 가능"
+        "4/21 +10.11% 단일일 급등 · 4/22 시초가 차익실현 매물 경계 ⚠️",
+        "EB 발행 등 자금 조달 이벤트 리스크 존재",
+        "미증시 VIX +7.95% 반등 · 위험자산 조정 파급 가능",
+        "4/21 정확 체결가 조사 중 — 매수 가격대 시초가 확인 후 진입"
+      ]
+    },
+    {
+      rank: "4위",
+      name: "현대차",
+      code: "KRX 005380",
+      price: 265000, change: 0, changePct: 0, stars: 4,
+      supply: "🚗 4/21 +3.61% 상승 마감 · 4월 1-20일 한국 수출 +49.4% YoY 역대 최대 504억 달러 · 1Q26 실적 발표 임박 (4/21 정확 체결가 조사 중)",
+      signals: { sar: true, vr: true, boll: false, vrValue: "4/21 외인+기관 코스피 쌍끌이 매수 · 자동차 수출 +49.4% 서프라이즈", sarNote: "1Q26 실적 발표 임박 · 4월 수출 역대 최대 레코드 수혜", bollNote: "반도체·2차전지 주도 장세 속 자동차 차순위 순환 매수 구간" },
+      buyRange: "260,000 ~ 270,000원",
+      buyExtra: "255,000원 아래 추가매수 (20일선 지지 확인)",
+      weight: "첫 매수 5% → 추가 5%씩 (최대 10%)",
+      target: 285000, stop: 252000,
+      targetPct: "+7.5%", stopPct: "-4.9%",
+      riskReward: "1 : 1.5",
+      news: [
+        "4월 1-20일 한국 수출 +49.4% YoY 역대 최대 504억 달러 · 자동차 섹터 호조 (파이낸셜뉴스)",
+        "4/21 현대차 +3.61% 상승 마감 · 1Q26 실적 발표 임박 (뉴스핌)",
+        "현대차 1Q26 실적 컨센서스 — 영업이익 호조 예상 (유진투자증권 4/13)",
+        "유진투자증권 현대차 BUY 유지 · 목표주가 컨센서스 상향 여지 (1/30)",
+        "美 관세·환율 변수 속 글로벌 판매 회복세 지속 — 2026년 모멘텀 확산"
+      ],
+      debate: {
+        bull: ["4월 수출 +49.4% 역대 최대 — 1Q26 실적 서프라이즈 기대 직결", "4/21 +3.61% 상승으로 순환 매수 구간 진입", "증권사 BUY 유지 + 글로벌 판매 회복세"],
+        bear: ["외인 연초부터 현대차 9조원 순매도 누적 — 수급 부담 상존", "美 관세·환율 불확실성 지속", "반도체·2차전지 주도 장세 속 자동차는 상대적 소외 가능"]
+      },
+      scenario: {
+        bull: { price: 295000, pct: "+11.3%", desc: "1Q26 실적 서프라이즈 + 수출 모멘텀 확산 + 외인 컴백" },
+        base: { price: 285000, pct: "+7.5%", desc: "1Q26 실적 컨센 부합 + 수출 호조 반영" },
+        bear: { price: 252000, pct: "-4.9%", desc: "실적 컨센 미달 + 외인 매도 재개 + 관세 변수" }
+      },
+      sector: ["자동차", "수출 대장", "1Q26 실적"],
+      valid: "2~4주 스윙 (1Q26 실적 + 4월 수출 확정치 발표 이벤트 드리븐)",
+      risks: [
+        "외인 연초부터 누적 9조원 현대차 순매도 — 수급 컴백 확인 필요 ⚠️",
+        "美 관세·환율 변수 지속 — 실적 가이던스 변동성",
+        "반도체·2차전지 주도 장세에서 자동차 상대적 소외 가능",
+        "4/21 정확 체결가 조사 중 — 매수 진입 시 시초가 확인"
       ]
     }
   ],
   portfolio: {
     items: [
-      { name: "S-OIL 👑", pct: 40, sector: "정유/유가 급등 수혜" },
-      { name: "LIG넥스원", pct: 35, sector: "방산/유도무기" },
-      { name: "현대로템", pct: 25, sector: "방산/전차·장갑차" }
+      { name: "LG에너지솔루션 👑", pct: 35, sector: "2차전지/EV 배터리" },
+      { name: "한미반도체", pct: 30, sector: "반도체 장비/HBM" },
+      { name: "HD현대중공업", pct: 20, sector: "조선/친환경 선박" },
+      { name: "현대차", pct: 15, sector: "자동차/수출 대장" }
     ],
     rules: [
-      "이벤트 드리븐 믹스: 정유(40%) + 방산 2종(60%) — 美-이란 4/23 휴전 만료 D-2 공통 수혜",
-      "단일 종목 최대 40% — 이익 쏠림 분산",
-      "4/23 수요일 휴전 결과 = 공통 분수령 → 결렬 시 전종목 상승 / 타결 시 전종목 하락 (테마 동조 주의, 손절선 엄격 준수)"
+      "코스피 사상 최고 6,388 경신 국면 분산: 2차전지(35%) + 반도체(30%) + 조선(20%) + 자동차(15%)",
+      "단일 종목 최대 35% — 반도체 실적(4/23) · 수출 서프라이즈 동시 노출",
+      "4/21 외인+기관 코스피 쌍끌이 매수 수급 지속 여부가 공통 분수령 — 미증시 VIX 반등 파급 시 손절선 엄격 준수"
     ]
   },
   trackRecord: {
-    date: "4월 21일",
-    records: [
-      { name: "S-OIL", code: "010950", recPrice: 115900, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "best" },
-      { name: "LIG넥스원", code: "079550", recPrice: 921000, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" },
-      { name: "현대로템", code: "064350", recPrice: 217500, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" }
-    ],
+    date: "4월 22일",
+    records: [],
     hitRate: null,
-    totalDays: 3,
+    totalDays: 4,
     avgReturn: null,
-    insight: "오늘(4/21) 코스피 +0.44% 6,219 마감. 반도체·2차전지·조선 대형주 주도(SK하이닉스 +5.19% · LG에너지솔루션 +11.31% · HD현대중공업 +10.11%)한 반면 아침 추천 3종목(정유·방산)은 섹터 역풍 — WTI 90달러 미만 유가 프리미엄 축소 + 방산주 차익실현. 웹검색으로 3종목 정확 종가 확인 불가로 적중률 산출 보류(확인 필요). 내일 4/23 D-Day 휴전 만료 임박, 실적시즌 본격화 국면 대비.",
-    tomorrowWatch: [
-      "LG에너지솔루션(373220) - 오늘 +11.31% 급등 마감, 2차전지 섹터 주도 흐름 연장 기대 + 1Q26 실적 시즌 본격화",
-      "HD현대중공업(329180) - 오늘 +10.11% 급등 마감, 조선주 대형주→중소형주 밸류체인 확산 초입 구간",
-      "현대자동차(005380) - 오늘 +3.61% 상승 마감, 4월 20일까지 수출 +49.4% YoY 서프라이즈 + 1Q 실적 발표 D-1 임박",
-      "SK스퀘어(402340) - 오늘 +2.43% 상승 마감, 반도체 대형주 순환 매수 흐름 수혜 + SK하이닉스 지분 보유 레버리지",
-      "한화에어로스페이스(012450) - K-방산 대장주, 4/23 美-이란 휴전 만료 D-2 이벤트 드리븐 — 결렬 시 방공 수요 최대 수혜"
-    ],
-    dataSource: "WebSearch 4/21 코스피 마감 시황(newspim·valley.town·DS투자증권 4/20 데일리) — 종목별 종가는 정확 체결가 확인 실패로 확인 필요 처리"
+    insight: "장마감(15:30) 후 분석 예정",
+    tomorrowWatch: [],
+    dataSource: "15:30 대기 중"
   },
   // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
   // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
@@ -745,34 +777,23 @@ const pickData = {
   //   insight: "반도체 섹터 추천 적중률 높음, 원전 섹터는 변동성 주의"
   // },
   realtime: {
-    rank: "📊 15:30 장마감 — 당일 적중률 확인 필요 (3종목 종가 미확정)",
-    name: "4/21 장마감 분석 요약",
-    code: "추천 3종목 정확 종가 미확인 — 내일 07:35 새 종목 발굴 예정",
+    rank: "🌅 장 시작 전 — 아침 준비",
+    name: "장 시작 대기",
+    code: "09:00 개장까지 대기 · 매크로 체크 중",
     price: 0, change: 0, changePct: 0, stars: 0,
-    supply: "오늘 코스피 +0.44% 6,219 마감(4월 MTD +22.6%). 반도체·2차전지·조선 대형주 주도(SK하이닉스 +5.19% · LG에너지솔루션 +11.31% · HD현대중공업 +10.11%) — 아침 추천 정유·방산 섹터는 유가 90달러 미만 + 휴전 협상 분위기로 상대적 약세 가능성. 3종목 정확 종가는 WebSearch 확인 실패(확인 필요).",
-    signals: { sar: false, vr: false, boll: false, vrValue: "장마감 종가 확인 실패", sarNote: "WebSearch 4/21 정확 체결가 확정 불가", bollNote: "내일 07:35 새 종목 발굴 시점에 재평가" },
-    buyRange: "장 종료 — 내일 07:35 아침 분석 대기",
-    buyExtra: "오늘 3종목 모두 종가 확인 실패로 손익 판정 보류. 추정 금지 원칙 준수.",
-    weight: "내일 아침 07:35 daily-trading-recommendation 기준 재평가",
+    supply: "실시간 수급 데이터 접근 불가 — 15:30 장마감 기준만 제공",
+    signals: { sar: false, vr: false, boll: false, vrValue: "-", sarNote: "-", bollNote: "-" },
+    buyRange: "09:00 개장 후 시초가 확인",
+    buyExtra: "—",
+    weight: "아침 best/top3 참고",
     target: 0, stop: 0, targetPct: "-", stopPct: "-",
-    riskReward: "장마감 — 실제 포지션 정산 필요 시 사용자 직접 확인",
-    news: [
-      "S-OIL(010950): 종가 확인 필요 — 아침 추천가 115,900원 · 손절 110,000원 · 목표 126,000원. 오늘 WTI 90달러 미만 + 유가 상방 베팅 의지 제한 → 유가 프리미엄 축소 환경",
-      "LIG넥스원(079550): 종가 확인 필요 — 아침 추천가 921,000원 · 손절 870,000원 · 목표 990,000원. 방산 섹터는 4/23 D-Day 휴전 이벤트 대기, 오늘 뚜렷한 대형주 주도주 명단 미진입",
-      "현대로템(064350): 종가 확인 필요 — 아침 추천가 217,500원 · 손절 205,500원 · 목표 235,000원. 조선은 HD현대중공업 +10.11% 급등, 방산/전차 섹터는 상대적 정체",
-      "🌅 내일 07:35 새 종목 발굴 예정 — 내일 관심 섹터 후보: 2차전지(LG에너지솔루션 +11.31%) · 조선(HD현대중공업 +10.11%) · 자동차(현대차 +3.61% · 4월 수출 +49.4% YoY) · K-방산(한화에어로 4/23 D-Day 이벤트)",
-      "시점 메모 — 2026-04-21(화) 15:30 KST 장마감. intradayPicks 비어있음(장중 발굴 일시정지 중). 4/23 수요일 美-이란 휴전 만료 = 시장 공통 분수령."
-    ],
+    riskReward: "-",
+    news: ["매크로 요약은 상단 글로벌 매크로 섹션 참조"],
     debate: { bull: [], bear: [] },
     scenario: { bull: {price:0,pct:"-",desc:"-"}, base: {price:0,pct:"-",desc:"-"}, bear: {price:0,pct:"-",desc:"-"} },
-    sector: ["정유", "방산", "조선", "2차전지", "반도체"],
-    valid: "내일 07:35 갱신 예정",
-    risks: [
-      "3종목 정확 종가 확인 실패 — 적중률 산출 보류 (사용자 직접 확인 권장)",
-      "4/23 美-이란 휴전 결과 = 전 섹터 공통 분수령 (결렬 시 방산·정유 반등 / 타결 시 재차 조정)",
-      "4월 MTD +22.6% 글로벌 최고 수익률 — 단기 과열 조정 리스크 상존",
-      "실시간 체결가·수급 데이터 API 미접근 — WebSearch만으로 장마감 정확 종가 확정 불가"
-    ]
+    sector: ["장 시작 대기"],
+    valid: "09:00 개장 후 갱신",
+    risks: ["장 시작 전 · 장중 신규 발굴은 중단 중(2주 검증 대기)"]
   }
 };
 
@@ -1480,4 +1501,118 @@ async function _loadSheetMacro() {
 async function _loadUsdKrw() {
   try {
     const res = await fetch("https://api.frankfurter.app/latest?from=USD&to=KRW");
-    if
+    if (!res.ok) return null;
+    const d = await res.json();
+    return d && d.rates && d.rates.KRW ? d.rates.KRW : null;
+  } catch(e) {
+    console.warn("환율 API 실패:", e);
+    return null;
+  }
+}
+
+async function refreshMacroFromSheet() {
+  const [sheet, krw] = await Promise.all([_loadSheetMacro(), _loadUsdKrw()]);
+  if (!pickData || !pickData.macro) return;
+  const m = pickData.macro;
+
+  if (sheet) {
+    const setField = (field, key, prefix, suffix) => {
+      const s = sheet[key];
+      if (!s || s.val === null) { m[field] = "⚠️ 조회 실패"; return; }
+      m[field] = `${prefix || ""}${_fmtNum(s.val)}${suffix || ""}${_fmtPct(s.chg)}`;
+    };
+    setField("vix", "VIX");
+    setField("sox", "SOXX", "", " (SOXX ETF)");
+    setField("nasdaq", "나스닥");
+    setField("nvidia", "엔비디아", "$");
+    setField("wti", "USO_WTI", "$", " (USO ETF)");
+    setField("brent", "BNO_Brent", "$", " (BNO ETF)");
+    setField("kospi", "KOSPI");
+    const k150 = sheet["KOSDAQ150_ETF"];
+    if (k150 && k150.chg !== null) {
+      const sign = k150.chg >= 0 ? "+" : "";
+      m.kosdaq = `${sign}${k150.chg.toFixed(2)}% (KOSDAQ150 ETF)`;
+    } else {
+      m.kosdaq = "⚠️ 조회 실패";
+    }
+  } else {
+    ["vix","sox","nasdaq","nvidia","wti","brent","kospi","kosdaq"].forEach(f => m[f] = "⚠️ 시트 로딩 실패");
+  }
+
+  if (krw) {
+    m.usdkrw = _fmtNum(krw) + "원";
+  } else {
+    m.usdkrw = "⚠️ 환율 조회 실패";
+  }
+
+  const now = new Date();
+  const ts = now.toLocaleString('ko-KR', {month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'});
+  m.asOf = "🌐 실시간 자동 갱신 · " + ts;
+
+  const cont = document.getElementById("macro-container");
+  if (cont) cont.innerHTML = renderMacro(m);
+}
+
+// 페이지 렌더 직후 실행
+refreshMacroFromSheet();
+
+document.getElementById("page-routine").innerHTML =
+  routineData.map((s, i) => renderItemSection(s, "r"+i)).join("") + coreHTML;
+document.getElementById("page-indicator").innerHTML =
+  indicatorData.map((s, i) => renderItemSection(s, "i"+i)).join("") + coreHTML;
+document.getElementById("page-rule").innerHTML =
+  ruleData.map((s, i) => renderBulletSection(s, "ru"+i)).join("") + coreHTML;
+document.getElementById("page-knowledge").innerHTML =
+  knowledgeData.map((s, i) => renderBulletSection(s, "k"+i)).join("") + coreHTML;
+
+// ===== TABS =====
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    tab.classList.add("active");
+    document.getElementById("page-" + tab.dataset.page).classList.add("active");
+    updateProgress();
+    const isPick = tab.dataset.page === "pick";
+    document.querySelector(".progress").style.display = isPick ? "none" : "flex";
+    document.querySelector(".reset-btn").style.display = isPick ? "none" : "block";
+  });
+});
+// hide progress on initial pick view
+document.querySelector(".progress").style.display = "none";
+document.querySelector(".reset-btn").style.display = "none";
+
+// ===== CHECK (in-memory) =====
+const checked = {};
+document.body.addEventListener("click", (e) => {
+  const el = e.target.closest("[data-check]");
+  if (!el) return;
+  const id = el.dataset.check;
+  checked[id] = !checked[id];
+  el.classList.toggle("checked", checked[id]);
+  updateProgress();
+});
+
+function updateProgress() {
+  const activePage = document.querySelector(".page.active");
+  if (!activePage) return;
+  const all = activePage.querySelectorAll("[data-check]");
+  const done = activePage.querySelectorAll("[data-check].checked");
+  const total = all.length;
+  const d = done.length;
+  const pct = total ? (d / total) * 100 : 0;
+  document.getElementById("pfill").style.width = pct + "%";
+  document.getElementById("ptext").textContent = d + " / " + total;
+}
+
+function resetChecks() {
+  Object.keys(checked).forEach(k => delete checked[k]);
+  document.querySelectorAll("[data-check]").forEach(el => el.classList.remove("checked"));
+  updateProgress();
+}
+
+updateProgress();
+</script>
+</body>
+</html>
+                                                                                                            
