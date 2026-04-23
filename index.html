@@ -549,9 +549,9 @@
 // ===== 오늘의 추천 샘플 데이터 =====
 const pickData = {
   date: "2026년 4월 23일 (목) 추천",
-  updated: "4월 23일 07:35 아침 분석 — Claude 자동 분석",
+  updated: "4월 23일 15:30 장마감 분석 — Claude 자동 분석",
   macro: {
-    asOf: "4/22 전일 미증시 마감 기준",
+    asOf: "4/23 한국장 마감 기준",
     vix: "⏳ 로딩 중",
     sox: "⏳ 로딩 중",
     nasdaq: "⏳ 로딩 중",
@@ -560,7 +560,7 @@ const pickData = {
     usdkrw: "⏳ 로딩 중",
     kospi: "⏳ 로딩 중",
     kosdaq: "⏳ 로딩 중",
-    headline: "📈 4/22 美 사상 최고 — 나스닥 +1.64% / S&P +1.05% / VIX 18.92(-2.97%) · SOXX 10일 연속 신고가 · 트럼프 이란 휴전 연장 · 4/23(목) SK하이닉스 1Q26 실적 D-Day(오후 3시, 영업익 컨센 34.9~36.4조 vs 증권가 40조+, 영업이익률 70%대 TSMC 추월 가능) · 동시 발표: KB금융·신한지주·하나금융·HD한국조선해양·POSCO홀딩스·LG화학(적자 컨센)·포스코퓨처엠·현대차 · 외인 4/22 코스피 +1.7467조 순매수, 4월 누적 SK하이닉스 +2.2조"
+    headline: "📊 4/23 코스피 사상 첫 6,500선 돌파 장중(6,538 고점) · SK하이닉스 1Q26 영업익 37.6조 역대 최대 영업이익률 72% 발표 후 장중 126.7만원 신고가 터치 후 차익실현으로 종가 121.4만원 -0.74% 반락 · 삼성전자 신고가 동반 · 조선·방산·철강(현대제철 급등) 순환 강세 · 외인 한국거래소·넥스트레이드 합산 -7,699억 순매도 속 개인 +1.7385조 방어 · HD현대중공업 기관·외인 쌍끌이 매수"
   },
   best: {
     rank: "베스트 픽",
@@ -735,13 +735,23 @@ const pickData = {
   },
   trackRecord: {
     date: "4월 23일",
-    records: [],
-    hitRate: null,
+    records: [
+      { name: "SK하이닉스", code: "000660", recPrice: 1224000, closePrice: 1214000, dayReturn: -0.82, result: "miss", targetHit: false, stopHit: false, slot: "best" },
+      { name: "KB금융", code: "105560", recPrice: 167000, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" },
+      { name: "HD한국조선해양", code: "009540", recPrice: 641000, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" },
+      { name: "POSCO홀딩스", code: "005490", recPrice: 421500, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" }
+    ],
+    hitRate: 0,
     totalDays: 5,
-    avgReturn: null,
-    insight: "장마감(15:30) 후 분석 예정",
-    tomorrowWatch: [],
-    dataSource: "15:30 대기 중"
+    avgReturn: "-0.8%",
+    insight: "SK하이닉스 영업익 37.6조·영업이익률 72% 역대 최대 어닝 서프라이즈에도 장중 126.7만원 신고가 후 차익실현 '뉴스에 팔기' 패턴으로 종가 121.4만원(-0.74%) 반락 · 코스피는 6,500선 첫 돌파 후 반도체 대장주 셀온에 상승폭 축소 · 내일은 반도체 외 철강(현대제철 주도)·조선(HD현대중공업)·방산 등 후행 섹터로 순환 흐름 주시 필요",
+    tomorrowWatch: [
+      "현대제철 (004020) - 오늘 철강 섹터 최대 급등주(+19.85%) · AI 데이터센터 건설용 철근 수요 부각 · 기관·외인 쌍끌이 매수 유입 기대",
+      "동국제강 (460860) - 오늘 +11.15% 철강 동반 강세 · H빔·전기로 차별화 경쟁력 + 미국 관세 수혜 기대",
+      "HD현대중공업 (329180) - 4/22 +11.28% 후 KRX 조선TOP10 지수 이틀 연속 급등(+5.62%→+7.70%) · 1Q26 영업익 80.4% 증가 컨센 · LNG선 수주 사이클 지속",
+      "한화에어로스페이스 (012450) - 오늘 방산 섹터 1%대 강세 · 폴란드 K9 2차 계약 + 미국 Northrop Grumman 파트너십 글로벌 수주 기대"
+    ],
+    dataSource: "WebSearch — 머니투데이·헤럴드경제·세계일보·자본시장뉴스·아시아경제 4/23 마감 기사 / KB금융·HD한국조선해양·POSCO홀딩스는 검색에서 정확한 종가 미확인(확인 필요)"
   },
   // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
   // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
@@ -778,23 +788,41 @@ const pickData = {
   //   insight: "반도체 섹터 추천 적중률 높음, 원전 섹터는 변동성 주의"
   // },
   realtime: {
-    rank: "🌅 장 시작 전 — 아침 준비",
-    name: "장 시작 대기",
-    code: "09:00 개장까지 대기 · 매크로 체크 중",
-    price: 0, change: 0, changePct: 0, stars: 0,
-    supply: "실시간 수급 데이터 접근 불가 — 15:30 장마감 기준만 제공",
-    signals: { sar: false, vr: false, boll: false, vrValue: "-", sarNote: "-", bollNote: "-" },
-    buyRange: "09:00 개장 후 시초가 확인",
-    buyExtra: "—",
-    weight: "아침 best/top3 참고",
-    target: 0, stop: 0, targetPct: "-", stopPct: "-",
-    riskReward: "-",
-    news: ["매크로 요약은 상단 글로벌 매크로 섹션 참조"],
+    rank: "📊 15:30 장마감 — 당일 적중률 0% (확인 1건) / 평균 수익률 -0.8% (SK하이닉스 확정, 3종목 확인 필요)",
+    name: "아침 추천 4종목 오버나이트/청산 모의 판단",
+    code: "마감 D-26min · 동시호가 D-46min · 평일(목) 오버나이트 가능 · SK하이닉스 15:00 실적 D-Day",
+    price: 1262000,
+    change: 38000,
+    changePct: 3.1,
+    stars: 3,
+    supply: "📊 4/23 마감 종합 — SK하이닉스 영업익 37.6조 역대 최대 발표에도 장중 126.7만원 신고가 후 차익실현으로 종가 121.4만원 -0.74% 반락 · 코스피 사상 첫 6,500선 돌파(장중 6,538 고점) · 철강(현대제철 +19.85%)·조선·방산 순환 강세 · KB·HD한국조선해양·POSCO홀딩스 정확 종가 확인 필요",
+    signals: { sar: true, vr: false, boll: true, vrValue: "실시간 외인/기관 수급 접근 불가 — 근거 약함", sarNote: "SK하이닉스 조간 +3.19%(9:38 기준) · 15:00 실적이 방향 결정", bollNote: "종목별 편차 큼 — 일괄 판단 지양, 개별 대응 권고" },
+    buyRange: "장 종료 — 내일 07:35 아침 분석 대기",
+    buyExtra: "14:34 이후 신규 진입 절대 금지. 아침 추천 4종목의 오버나이트/청산 모의 판단에만 집중.",
+    weight: "평일 오버나이트 모의 비중 10% 이하 엄수 — 실적 이벤트 앞둔 SK하이닉스는 축소 권고",
+    target: 0,
+    stop: 0,
+    targetPct: "-",
+    stopPct: "-",
+    riskReward: "마감 정리 관찰 모드 (실제 포지션 아님)",
+    news: [
+      "[best] SK하이닉스 추천가 1,224,000원 → 종가 1,214,000원 (-0.82%) · 영업익 37.6조 역대 최대·영업이익률 72% TSMC 추월 발표에도 장중 신고가(1,267,000) 후 차익실현 매물로 종가 반락 [miss]",
+      "[top3 1위] KB금융 추천가 167,000원 → 종가 확인 필요 · 1Q26 실적 발표 D-Day (NIM 회복·외화 평가이익) — 금융주 섹터 약세로 마감 분위기 · 정확 종가 WebSearch에서 교차검증 실패",
+      "[top3 2위] HD한국조선해양 추천가 641,000원 → 종가 확인 필요 · 1Q26 실적 발표 D-Day · KRX 조선TOP10 지수 2거래일 연속 +5.62%→+7.70% 상승세 · 정확 종가 WebSearch에서 교차검증 실패",
+      "[top3 3위] POSCO홀딩스 추천가 421,500원 → 종가 확인 필요 · 포스코퓨처엠 동시 실적 발표 · 철강 섹터는 현대제철(+19.85%) 주도 급등 · 정확 종가 WebSearch에서 교차검증 실패",
+      "🌅 내일 07:35 새 종목 발굴 예정 — 철강(현대제철·동국제강)·조선(HD현대중공업)·방산(한화에어로스페이스) 후행 섹터 순환 주시"
+    ],
     debate: { bull: [], bear: [] },
     scenario: { bull: {price:0,pct:"-",desc:"-"}, base: {price:0,pct:"-",desc:"-"}, bear: {price:0,pct:"-",desc:"-"} },
-    sector: ["장 시작 대기"],
-    valid: "09:00 개장 후 갱신",
-    risks: ["장 시작 전 · 장중 신규 발굴은 중단 중(2주 검증 대기)"]
+    sector: ["반도체 대장주", "금융/은행", "조선 지주사", "철강+양극재"],
+    valid: "내일 07:35 갱신 예정",
+    risks: [
+      "동시호가 급변동 리스크 — 실제 매도 시 지정가 분할 필수, 시장가 금물",
+      "SK하이닉스 15:00 실적 발표 결과에 따라 당일 종가·익일 갭 방향 결정 — 이벤트 드리븐 변동성 최고조",
+      "KB금융 실적 +62.9% YoY 호조에도 주가 하락 가능성 — '기대 선반영' 리스크, 손절선 158,000 엄격 준수",
+      "실시간 수급 데이터 접근 불가 — 현재가·등락률 추정치만 근거 (조회 실패 종목 있음)",
+      "오버나이트 모의 총 비중 10% 상한 엄수 (평일 기준)"
+    ]
   }
 };
 
@@ -1581,39 +1609,4 @@ document.querySelectorAll(".tab").forEach(tab => {
 });
 // hide progress on initial pick view
 document.querySelector(".progress").style.display = "none";
-document.querySelector(".reset-btn").style.display = "none";
-
-// ===== CHECK (in-memory) =====
-const checked = {};
-document.body.addEventListener("click", (e) => {
-  const el = e.target.closest("[data-check]");
-  if (!el) return;
-  const id = el.dataset.check;
-  checked[id] = !checked[id];
-  el.classList.toggle("checked", checked[id]);
-  updateProgress();
-});
-
-function updateProgress() {
-  const activePage = document.querySelector(".page.active");
-  if (!activePage) return;
-  const all = activePage.querySelectorAll("[data-check]");
-  const done = activePage.querySelectorAll("[data-check].checked");
-  const total = all.length;
-  const d = done.length;
-  const pct = total ? (d / total) * 100 : 0;
-  document.getElementById("pfill").style.width = pct + "%";
-  document.getElementById("ptext").textContent = d + " / " + total;
-}
-
-function resetChecks() {
-  Object.keys(checked).forEach(k => delete checked[k]);
-  document.querySelectorAll("[data-check]").forEach(el => el.classList.remove("checked"));
-  updateProgress();
-}
-
-updateProgress();
-</script>
-</body>
-</html>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+document.querySelector(".reset-
