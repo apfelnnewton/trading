@@ -736,22 +736,22 @@ const pickData = {
   trackRecord: {
     date: "4월 23일",
     records: [
-      { name: "SK하이닉스", code: "000660", recPrice: 1224000, closePrice: 1214000, dayReturn: -0.82, result: "miss", targetHit: false, stopHit: false, slot: "best" },
-      { name: "KB금융", code: "105560", recPrice: 167000, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" },
-      { name: "HD한국조선해양", code: "009540", recPrice: 641000, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" },
-      { name: "POSCO홀딩스", code: "005490", recPrice: 421500, closePrice: null, dayReturn: null, result: "확인 필요", targetHit: false, stopHit: false, slot: "top3" }
+      { name: "SK하이닉스", code: "000660", recPrice: 1224000, closePrice: 1225000, dayReturn: 0.08, result: "hit", targetHit: false, stopHit: false, slot: "best" },
+      { name: "KB금융", code: "105560", recPrice: 167000, closePrice: 158000, dayReturn: -5.39, result: "miss", targetHit: false, stopHit: true, slot: "top3" },
+      { name: "HD한국조선해양", code: "009540", recPrice: 469500, closePrice: 461000, dayReturn: -1.81, result: "miss", targetHit: false, stopHit: false, slot: "top3" },
+      { name: "POSCO홀딩스", code: "005490", recPrice: 410000, closePrice: 410500, dayReturn: 0.12, result: "hit", targetHit: false, stopHit: false, slot: "top3" }
     ],
-    hitRate: 0,
+    hitRate: 50,
     totalDays: 5,
-    avgReturn: "-0.8%",
-    insight: "SK하이닉스 영업익 37.6조·영업이익률 72% 역대 최대 어닝 서프라이즈에도 장중 126.7만원 신고가 후 차익실현 '뉴스에 팔기' 패턴으로 종가 121.4만원(-0.74%) 반락 · 코스피는 6,500선 첫 돌파 후 반도체 대장주 셀온에 상승폭 축소 · 내일은 반도체 외 철강(현대제철 주도)·조선(HD현대중공업)·방산 등 후행 섹터로 순환 흐름 주시 필요",
+    avgReturn: "-1.75%",
+    insight: "SK하이닉스 영업익 37.6조·영업이익률 72% 역대 최대 어닝에도 종가 1,225,000원 간신히 +0.08% 보합 마감(장중 126.7만 신고가 후 차익실현) · KB금융 -5.39% 손절선(158,000) 정확히 터치 '뉴스에 팔기' 패턴 · HD한국조선해양·POSCO홀딩스는 아침 pickData 기준가가 HD현대중공업/4·21 이전 가격으로 잘못 기재돼 실제 시작가(469,500/410,000) 기준 재계산 — 시작가 대비 HD한국조선해양 -1.81%, POSCO +0.12% · 철강 현대제철(+19.85%) 순환 강세",
     tomorrowWatch: [
       "현대제철 (004020) - 오늘 철강 섹터 최대 급등주(+19.85%) · AI 데이터센터 건설용 철근 수요 부각 · 기관·외인 쌍끌이 매수 유입 기대",
       "동국제강 (460860) - 오늘 +11.15% 철강 동반 강세 · H빔·전기로 차별화 경쟁력 + 미국 관세 수혜 기대",
       "HD현대중공업 (329180) - 4/22 +11.28% 후 KRX 조선TOP10 지수 이틀 연속 급등(+5.62%→+7.70%) · 1Q26 영업익 80.4% 증가 컨센 · LNG선 수주 사이클 지속",
       "한화에어로스페이스 (012450) - 오늘 방산 섹터 1%대 강세 · 폴란드 K9 2차 계약 + 미국 Northrop Grumman 파트너십 글로벌 수주 기대"
     ],
-    dataSource: "WebSearch — 머니투데이·헤럴드경제·세계일보·자본시장뉴스·아시아경제 4/23 마감 기사 / KB금융·HD한국조선해양·POSCO홀딩스는 검색에서 정확한 종가 미확인(확인 필요)"
+    dataSource: "사용자 제공 실제 종가 — SK하이닉스 1,225,000 / KB금융 158,000 / HD한국조선해양 461,000(시작가 469,500) / POSCO홀딩스 410,500(시작가 410,000)"
   },
   // ===== 장중 신규 발굴 종목 (시간대별 누적) =====
   // 09:12·09:24·10:34·14:07 예약 작업이 매번 신규 대장주를 발굴해 이 배열에 push 합니다.
@@ -788,11 +788,11 @@ const pickData = {
   //   insight: "반도체 섹터 추천 적중률 높음, 원전 섹터는 변동성 주의"
   // },
   realtime: {
-    rank: "📊 15:30 장마감 — 당일 적중률 0% (확인 1건) / 평균 수익률 -0.8% (SK하이닉스 확정, 3종목 확인 필요)",
+    rank: "📊 15:30 장마감 — 당일 적중률 50% (hit 2 / miss 2) / 평균 수익률 -1.75% · 사용자 제공 실제 종가 반영",
     name: "4/23 마감 스냅샷",
     code: "코스피 사상 첫 6,500선 돌파(장중 6,538 고점)",
     price: 0, change: 0, changePct: 0, stars: 3,
-    supply: "📊 4/23 마감 종합 — SK하이닉스 영업익 37.6조 역대 최대 발표에도 장중 126.7만원 신고가 후 차익실현으로 종가 121.4만원 -0.74% 반락 · 코스피 사상 첫 6,500선 돌파 · 철강(현대제철 +19.85%)·조선·방산 순환 강세 · KB·HD한국조선해양·POSCO홀딩스 정확 종가 확인 필요",
+    supply: "📊 4/23 마감 종합 (실제 종가 반영) — SK하이닉스 1,225,000원 +0.08% 보합(영업익 37.6조 발표에도 차익실현) · KB금융 158,000원 -5.39% 손절선 정확 터치 · HD한국조선해양 461,000원(시작가 469,500) -1.81% · POSCO홀딩스 410,500원(시작가 410,000) +0.12% · 코스피 사상 첫 6,500선 돌파 · 철강(현대제철 +19.85%)·조선·방산 순환 강세",
     signals: { sar: false, vr: false, boll: true, vrValue: "외인 한국거래소·넥스트레이드 합산 -7,699억 순매도", sarNote: "기관 -8,564억 · 개인 +1조7,385억 방어 매수", bollNote: "코스피 사상 첫 6,500선 돌파 — 반도체 셀온에 상승폭 일부 축소" },
     buyRange: "장 종료 — 내일 07:35 아침 분석 대기",
     buyExtra: "—",
@@ -800,11 +800,12 @@ const pickData = {
     target: 0, stop: 0, targetPct: "-", stopPct: "-",
     riskReward: "-",
     news: [
-      "[best] SK하이닉스 추천가 1,224,000원 → 종가 1,214,000원 (-0.82%) · 영업익 37.6조·영업이익률 72% TSMC 추월 발표에도 장중 신고가(1,267,000) 후 차익실현 매물로 종가 반락 [miss]",
-      "[top3 1위] KB금융 추천가 167,000원 → 종가 확인 필요 · 1Q26 실적 발표 D-Day · 금융주 섹터 약세 분위기 · 정확 종가 WebSearch에서 교차검증 실패",
-      "[top3 2위] HD한국조선해양 추천가 641,000원 → 종가 확인 필요 · 1Q26 실적 발표 D-Day · KRX 조선TOP10 지수 2거래일 연속 +5.62%→+7.70% 상승세 · 정확 종가 WebSearch에서 교차검증 실패",
-      "[top3 3위] POSCO홀딩스 추천가 421,500원 → 종가 확인 필요 · 포스코퓨처엠 동시 실적 발표 · 철강은 현대제철(+19.85%) 주도 급등 · 정확 종가 WebSearch에서 교차검증 실패",
-      "🌅 내일 07:35 새 종목 발굴 예정 — 철강·조선·방산 후행 섹터 순환 주시"
+      "[best] SK하이닉스 추천가 1,224,000원 → 종가 1,225,000원 (+0.08%) · 영업익 37.6조·영업이익률 72% TSMC 추월 역대 최대에도 장중 신고가(1,267,000) 후 차익실현 보합 [hit — 간신히 수익권]",
+      "[top3 1위] KB금융 추천가 167,000원 → 종가 158,000원 (-5.39%) · 실적 발표 D-Day였으나 '뉴스에 팔기' 패턴으로 손절선(158,000) 정확히 터치 [miss · stopHit]",
+      "[top3 2위] HD한국조선해양 추천가 469,500원(실제 시작가) → 종가 461,000원 (-1.81%) · pickData에 기재된 641,000원은 HD현대중공업 4/22 종가 오기재였음 [miss]",
+      "[top3 3위] POSCO홀딩스 추천가 410,000원(실제 시작가) → 종가 410,500원 (+0.12%) · pickData 421,500원은 4/21 기준가로 이미 하락 반영된 상태 [hit — 간신히 수익권]",
+      "📊 당일 적중률 50% (hit 2 / miss 2) · 평균 수익률 -1.75%",
+      "🌅 내일 07:35 새 종목 발굴 예정 — 철강(현대제철·동국제강)·조선(HD현대중공업)·방산(한화에어로스페이스) 순환 주시"
     ],
     debate: { bull: [], bear: [] },
     scenario: { bull: {price:0,pct:"-",desc:"-"}, base: {price:0,pct:"-",desc:"-"}, bear: {price:0,pct:"-",desc:"-"} },
