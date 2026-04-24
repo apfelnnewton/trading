@@ -48,3 +48,24 @@
 - top3 1위 (25%): 섹터 로테이션 후행 수혜주 (실적 D-Day 금지)
 - top3 2위 (20%): 차트 돌파 or 수급 쌍끌이 종목 (실적 D-Day 허용 — 최대 2개 제한 범위 내)
 - top3 3위 (15%): 방어주 or 배당주 (실적 D-Day 금지)
+
+## 규칙 9. 아침 07:35 recPrice는 반드시 사용자 제공 전일 종가 기준 (2026-04-24 추가)
+- 07:35 작업은 4종목 발굴까지만 하고 recPrice는 반드시 `null` 로 설정, HTML에 "📞 사용자 전일 종가 입력 대기" 문구 표시.
+- supply/reason/buyRange 어디에도 "추정", "~적용 시", "역산" 등의 표현 사용 금지. 추정치 recPrice는 무조건 규칙 2 위반으로 간주.
+- 사용자가 전일(또는 전 주 금요일) 종가 4개 제공하면 즉시:
+  1. recPrice 교체
+  2. buyRange = recPrice ±2~3% 범위 재산정
+  3. target = recPrice × (1 + targetPct)
+  4. stop = recPrice × (1 - stopPct)
+  5. 재푸시
+- 09:00 이후 사용자가 "시작가"를 추가로 제공하면 규칙 6에 따라 실제 진입가 기준으로 2차 보정.
+- 2026-04-24 교훈: 현대제철 recPrice 47,000원을 "4/9 종가 39,450원 × +19.85% 추정치"로 설정 → 실제 시작가 41,900원과 12% 차이 → 전 종목 hit 가능했던 장에서 miss로 집계될 뻔함.
+
+## 규칙 10. 실패 학습 시스템 — memory/ 디렉토리 누적 (2026-04-24 추가)
+- 15:30 장마감 작업은 `memory/` 디렉토리의 아래 파일에 복기 자동 누적:
+  - `memory/trade_journal.md` : 일일 복기(hit/miss·규칙 위반·교훈) — 최신이 맨 위
+  - `memory/mistakes.md` : 규칙 위반·반복 실수 카탈로그 (태그별 분류)
+  - `memory/learnings.md` : 축적된 핵심 교훈 (CLAUDE.md 규칙 소스)
+  - `memory/sector_stats.md` : 섹터별 hit/miss 카운트 (월간 리뷰용)
+- 같은 실수가 `mistakes.md`에 3회 이상 기록되면 CLAUDE.md 신규 규칙으로 승격 검토.
+- 주말마다 `learnings.md` 리뷰해서 다음 주 전략에 반영.
